@@ -1,0 +1,5 @@
+[package]
+name = "more_ranges"
+version = "0.1.0"
+authors = ["Anders Evensen"]
+edition = "2018"
