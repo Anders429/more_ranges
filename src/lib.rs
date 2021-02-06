@@ -9,6 +9,19 @@ use core::ops::{
     RangeBounds,
 };
 
+/// A range only bounded exclusively below.
+///
+/// The `RangeFromExclusive` contains all values with `x > start`.
+///
+/// *Note*: Overflow in the [`Iterator`] implementation (when the contained data type reaches its
+/// numerical limit) is allowed to panic, wrap, or saturate. This behavior is defined by the
+/// implementation of the [`Step`] trait. For primitive integers, this follows the normal rules, and
+/// respects the overflow checks profile (panic in debug, wrap in release). Note also that overflow
+/// happens earlier than you might assume: the overflow happens in the call to next that yields the
+/// maximum value, as the range must be set to a state to yield the next value.
+///
+/// [`Iterator`]: core::iter::Iterator
+/// [`Step`]: core::iter::Step
 pub struct RangeFromExclusive<Idx> {
     pub start: Idx,
 }
@@ -22,6 +35,10 @@ impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     }
 }
 
+/// A range bounded exclusively below and inclusively above.
+///
+/// The `RangeFromExclusiveToInclusive` contains all values with `x > start` and `x <= end`. It is
+/// empty unless `start < end`.
 pub struct RangeFromExclusiveToInclusive<Idx> {
     pub start: Idx,
     pub end: Idx,
@@ -36,6 +53,10 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     }
 }
 
+/// A range bounded exclusively below and above.
+///
+/// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
+/// empty unless `start < end + 1`.
 pub struct RangeFromExclusiveToExclusive<Idx> {
     pub start: Idx,
     pub end: Idx,
