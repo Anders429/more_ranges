@@ -52,7 +52,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{RangeFromExclusive, RangeFromExclusiveToExclusive, RangeFromExclusiveToInclusive};
+    use ::{RangeFromExclusive, RangeFromExclusiveToExclusive, RangeFromExclusiveToInclusive};
     use core::ops::{
         Bound::{Excluded, Included, Unbounded},
         RangeBounds,
