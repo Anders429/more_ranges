@@ -23,6 +23,7 @@ use core::ops::{
 /// [`Iterator`]: core::iter::Iterator
 /// [`Step`]: core::iter::Step
 pub struct RangeFromExclusive<Idx> {
+    /// The lower bound of the range (exclusive).
     pub start: Idx,
 }
 
@@ -53,7 +54,9 @@ impl<T> RangeBounds<T> for RangeFromExclusive<&T> {
 /// The `RangeFromExclusiveToInclusive` contains all values with `x > start` and `x <= end`. It is
 /// empty unless `start < end`.
 pub struct RangeFromExclusiveToInclusive<Idx> {
+    /// The lower bound of the range (exclusive).
     pub start: Idx,
+    /// The upper bound of the range (inclusive).
     pub end: Idx,
 }
 
@@ -88,7 +91,9 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<&T> {
 /// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
 /// empty unless `start < end + 1`.
 pub struct RangeFromExclusiveToExclusive<Idx> {
+    /// The lower bound of the range (exclusive).
     pub start: Idx,
+    /// The upper bound of the range (exclusive).
     pub end: Idx,
 }
 
