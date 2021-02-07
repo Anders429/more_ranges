@@ -59,10 +59,12 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     #[inline]
+    #[must_use]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
     #[inline]
+    #[must_use]
     fn end_bound(&self) -> Bound<&T> {
         Included(&self.end)
     }
@@ -70,10 +72,12 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<&T> {
     #[inline]
+    #[must_use]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
     #[inline]
+    #[must_use]
     fn end_bound(&self) -> Bound<&T> {
         Included(self.end)
     }
@@ -90,10 +94,12 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     #[inline]
+    #[must_use]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
     #[inline]
+    #[must_use]
     fn end_bound(&self) -> Bound<&T> {
         Excluded(&self.end)
     }
@@ -101,10 +107,12 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<&T> {
     #[inline]
+    #[must_use]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
     #[inline]
+    #[must_use]
     fn end_bound(&self) -> Bound<&T> {
         Excluded(self.end)
     }
