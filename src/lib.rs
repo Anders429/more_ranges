@@ -51,6 +51,17 @@ use core::ops::{
 /// happens earlier than you might assume: the overflow happens in the call to next that yields the
 /// maximum value, as the range must be set to a state to yield the next value.
 ///
+/// # Example
+/// `RangeFromExclusive`s can be created directly, as follows:
+///
+/// ```
+/// use more_ranges::RangeFromExclusive;
+///
+/// let range = RangeFromExclusive {
+///     start: 1,
+/// };
+/// ```
+///
 /// [`Iterator`]: core::iter::Iterator
 /// [`Step`]: core::iter::Step
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
@@ -85,6 +96,18 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
 ///
 /// The `RangeFromExclusiveToInclusive` contains all values with `x > start` and `x <= end`. It is
 /// empty unless `start < end`.
+///
+/// # Example
+/// `RangeFromExclusiveToInclusive`s can be created directly, as follows:
+///
+/// ```
+/// use more_ranges::RangeFromExclusiveToInclusive;
+///
+/// let range = RangeFromExclusiveToInclusive {
+///     start: 1,
+///     end: 4,
+/// };
+/// ```
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToInclusive<Idx> {
     /// The lower bound of the range (exclusive).
@@ -123,6 +146,18 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
 ///
 /// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
 /// empty unless `start < end + 1`.
+///
+/// # Example
+/// `RangeFromExclusiveToExclusive`s can be created directly, as follows:
+///
+/// ```
+/// use more_ranges::RangeFromExclusiveToExclusive;
+///
+/// let range = RangeFromExclusiveToExclusive {
+///     start: 1,
+///     end: 4,
+/// };
+/// ```
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToExclusive<Idx> {
     /// The lower bound of the range (exclusive).
