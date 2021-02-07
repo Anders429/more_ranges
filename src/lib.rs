@@ -38,7 +38,7 @@ impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     }
 }
 
-impl<T> RangeBounds<T> for RangeFromExclusive<&T> {
+impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
@@ -73,7 +73,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     }
 }
 
-impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<&T> {
+impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     #[inline]
     #[must_use]
     fn start_bound(&self) -> Bound<&T> {
@@ -110,7 +110,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     }
 }
 
-impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<&T> {
+impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
     #[inline]
     #[must_use]
     fn start_bound(&self) -> Bound<&T> {
