@@ -32,10 +32,10 @@ This crate is guaranteed to compile on stable `rustc 1.28.0` and up.
 This project is licensed under either of
 
 * Apache License, Version 2.0
-([LICENSE-APACHE](https://github.com/Anders429/nested_containment_list/blob/HEAD/LICENSE-APACHE) or
+([LICENSE-APACHE](https://github.com/Anders429/more_ranges/blob/HEAD/LICENSE-APACHE) or
 http://www.apache.org/licenses/LICENSE-2.0)
 * MIT license
-([LICENSE-MIT](https://github.com/Anders429/nested_containment_list/blob/HEAD/LICENSE-MIT) or
+([LICENSE-MIT](https://github.com/Anders429/more_ranges/blob/HEAD/LICENSE-MIT) or
 http://opensource.org/licenses/MIT)
 
 at your option.
