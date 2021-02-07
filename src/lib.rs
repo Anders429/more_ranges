@@ -22,6 +22,7 @@ use core::ops::{
 ///
 /// [`Iterator`]: core::iter::Iterator
 /// [`Step`]: core::iter::Step
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusive<Idx> {
     /// The lower bound of the range (exclusive).
     pub start: Idx,
@@ -53,6 +54,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
 ///
 /// The `RangeFromExclusiveToInclusive` contains all values with `x > start` and `x <= end`. It is
 /// empty unless `start < end`.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToInclusive<Idx> {
     /// The lower bound of the range (exclusive).
     pub start: Idx,
@@ -90,6 +92,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
 ///
 /// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
 /// empty unless `start < end + 1`.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToExclusive<Idx> {
     /// The lower bound of the range (exclusive).
     pub start: Idx,
