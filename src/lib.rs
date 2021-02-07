@@ -27,18 +27,22 @@ pub struct RangeFromExclusive<Idx> {
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusive<T> {
+    #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
+    #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Unbounded
     }
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusive<&T> {
+    #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
+    #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Unbounded
     }
@@ -54,18 +58,22 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
+    #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
+    #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Included(&self.end)
     }
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<&T> {
+    #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
+    #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Included(self.end)
     }
@@ -81,18 +89,22 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
+    #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
+    #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Excluded(&self.end)
     }
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<&T> {
+    #[inline]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
+    #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Excluded(self.end)
     }
