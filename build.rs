@@ -18,5 +18,9 @@ fn main() {
     {
         autocfg::emit("impl_iterator");
     }
+    ac.set_feature("trusted_len");
+    if ac.probe_trait("core::iter::TrustedLen") {
+        autocfg::emit("impl_trusted_len");
+    }
     ac.emit_rustc_channel(Channel::Nightly);
 }

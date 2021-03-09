@@ -33,6 +33,7 @@
     all(rustc_channel_nightly, impl_iterator),
     feature(step_trait, step_trait_ext, unchecked_math)
 )]
+#![cfg_attr(all(rustc_channel_nightly, impl_iterator, impl_trusted_len), feature(trusted_len))]
 #![no_std]
 
 #[cfg(test)]
@@ -48,6 +49,8 @@ use core::{
     iter::{FusedIterator, Step},
     mem,
 };
+#[cfg(all(impl_iterator, impl_trusted_len))]
+use core::iter::TrustedLen;
 
 /// A range only bounded exclusively below.
 ///
@@ -144,7 +147,17 @@ where
         class = "nightly"
     )
 )]
-impl<T> FusedIterator for RangeFromExclusive<T> where T: Step {}
+impl<T> FusedIterator for RangeFromExclusive<T> {}
+
+#[cfg(all(impl_iterator, impl_trusted_len))]
+#[cfg_attr(
+    feature = "doc_item",
+    doc_item::docbox(
+        content = "Only available on <b><code>nightly</code></b>.",
+        class = "nightly"
+    )
+)]
+unsafe impl<T> TrustedLen for RangeFromExclusive<T> {}
 
 /// A range bounded exclusively below and inclusively above.
 ///
@@ -328,6 +341,16 @@ where
     )
 )]
 impl<T> FusedIterator for RangeFromExclusiveToInclusive<T> where T: Step {}
+
+#[cfg(all(impl_iterator, impl_trusted_len))]
+#[cfg_attr(
+    feature = "doc_item",
+    doc_item::docbox(
+        content = "Only available on <b><code>nightly</code></b>.",
+        class = "nightly"
+    )
+)]
+unsafe impl<T> TrustedLen for RangeFromExclusiveToInclusive<T> {}
 
 /// A range bounded exclusively below and above.
 ///
@@ -524,6 +547,16 @@ where
     )
 )]
 impl<T> FusedIterator for RangeFromExclusiveToExclusive<T> where T: Step {}
+
+#[cfg(all(impl_iterator, impl_trusted_len))]
+#[cfg_attr(
+    feature = "doc_item",
+    doc_item::docbox(
+        content = "Only available on <b><code>nightly</code></b>.",
+        class = "nightly"
+    )
+)]
+unsafe impl<T> TrustedLen for RangeFromExclusiveToExclusive<T> {}
 
 #[cfg(test)]
 mod tests {
