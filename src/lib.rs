@@ -147,7 +147,7 @@ where
         class = "nightly"
     )
 )]
-impl<T> FusedIterator for RangeFromExclusive<T> {}
+impl<T> FusedIterator for RangeFromExclusive<T> where T: Step {}
 
 #[cfg(all(impl_iterator, impl_trusted_len))]
 #[cfg_attr(
@@ -157,7 +157,7 @@ impl<T> FusedIterator for RangeFromExclusive<T> {}
         class = "nightly"
     )
 )]
-unsafe impl<T> TrustedLen for RangeFromExclusive<T> {}
+unsafe impl<T> TrustedLen for RangeFromExclusive<T> where T: Step {}
 
 /// A range bounded exclusively below and inclusively above.
 ///
@@ -350,7 +350,7 @@ impl<T> FusedIterator for RangeFromExclusiveToInclusive<T> where T: Step {}
         class = "nightly"
     )
 )]
-unsafe impl<T> TrustedLen for RangeFromExclusiveToInclusive<T> {}
+unsafe impl<T> TrustedLen for RangeFromExclusiveToInclusive<T> where T: Step {}
 
 /// A range bounded exclusively below and above.
 ///
@@ -556,7 +556,7 @@ impl<T> FusedIterator for RangeFromExclusiveToExclusive<T> where T: Step {}
         class = "nightly"
     )
 )]
-unsafe impl<T> TrustedLen for RangeFromExclusiveToExclusive<T> {}
+unsafe impl<T> TrustedLen for RangeFromExclusiveToExclusive<T> where T: Step {}
 
 #[cfg(test)]
 mod tests {
