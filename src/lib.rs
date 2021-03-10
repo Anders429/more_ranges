@@ -356,11 +356,10 @@ impl<T> FusedIterator for RangeFromExclusiveToInclusive<T> where T: Step {}
 )]
 unsafe impl<T> TrustedLen for RangeFromExclusiveToInclusive<T> where T: Step {}
 
+#[cfg(impl_iterator)]
 macro_rules! range_from_exclusive_to_inclusive_exact_iter_impl {
     ($t:ty $(, $($pointer_width:literal),+)?) => {
-        #[cfg(all(
-            impl_iterator,
-            $(any(
+        #[cfg(all($(any(
                 $(target_pointer_width = $pointer_width),+)
             )?
         ))]
@@ -390,15 +389,34 @@ macro_rules! range_from_exclusive_to_inclusive_exact_iter_impl {
     }
 }
 
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(usize);
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(isize);
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(u64, "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(i64, "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(u32, "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(i32, "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(u16, "16", "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(i16, "16", "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(u8, "16", "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(i8, "16", "32", "64");
 
 /// A range bounded exclusively below and above.
@@ -607,11 +625,10 @@ impl<T> FusedIterator for RangeFromExclusiveToExclusive<T> where T: Step {}
 )]
 unsafe impl<T> TrustedLen for RangeFromExclusiveToExclusive<T> where T: Step {}
 
+#[cfg(impl_iterator)]
 macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
     ($t:ty $(, $($pointer_width:literal),+)?) => {
-        #[cfg(all(
-            impl_iterator,
-            $(any(
+        #[cfg(all($(any(
                 $(target_pointer_width = $pointer_width),+)
             )?
         ))]
@@ -646,15 +663,34 @@ macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
     }
 }
 
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(usize);
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(isize);
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(u64, "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(i64, "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(u32, "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(i32, "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(u16, "16", "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(i16, "16", "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(u8, "16", "32", "64");
+
+#[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(i8, "16", "32", "64");
 
 #[cfg(test)]
@@ -796,10 +832,10 @@ mod tests {
         assert_none!(range.nth_back(0));
     }
 
+    #[cfg(impl_iterator)]
     macro_rules! test_range_from_exclusive_to_inclusive_exact_iter_unsigned {
         ($name:ident, $t:ty $(, $($pointer_width:literal),+)?) => {
             #[cfg(all(
-                impl_iterator,
                 $(any(
                     $(target_pointer_width = $pointer_width),+)
                 )?
@@ -814,6 +850,7 @@ mod tests {
         }
     }
 
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
         range_from_exclusive_to_inclusive_exact_iter_u8,
         u8,
@@ -821,6 +858,8 @@ mod tests {
         "32",
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
         range_from_exclusive_to_inclusive_exact_iter_u16,
         u16,
@@ -828,26 +867,32 @@ mod tests {
         "32",
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
         range_from_exclusive_to_inclusive_exact_iter_u32,
         u32,
         "32",
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
         range_from_exclusive_to_inclusive_exact_iter_u64,
         u64,
         "64"
     );
+    
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
         range_from_exclusive_to_inclusive_exact_iter_usize,
         usize
     );
 
+    #[cfg(impl_iterator)]
     macro_rules! test_range_from_exclusive_to_inclusive_exact_iter_signed {
         ($name:ident, $t:ty, $unsigned_t:ty $(, $($pointer_width:literal),+)?) => {
             #[cfg(all(
-                impl_iterator,
                 $(any(
                     $(target_pointer_width = $pointer_width),+)
                 )?
@@ -862,6 +907,7 @@ mod tests {
         }
     }
 
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_signed!(
         range_from_exclusive_to_inclusive_exact_iter_i8,
         i8,
@@ -870,6 +916,8 @@ mod tests {
         "32",
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_signed!(
         range_from_exclusive_to_inclusive_exact_iter_i16,
         i16,
@@ -878,6 +926,8 @@ mod tests {
         "32",
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_signed!(
         range_from_exclusive_to_inclusive_exact_iter_i32,
         i32,
@@ -885,12 +935,16 @@ mod tests {
         "32",
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_signed!(
         range_from_exclusive_to_inclusive_exact_iter_i64,
         i64,
         u64,
         "64"
     );
+
+    #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_signed!(
         range_from_exclusive_to_inclusive_exact_iter_isize,
         isize,
