@@ -5,6 +5,13 @@ use autocfg::Channel;
 fn main() {
     let mut ac = autocfg::new();
 
+    ac.set_feature("collections_range");
+    if ac.probe_trait("core::ops::RangeBounds<usize>")
+        && ac.probe_expression("core::ops::RangeBounds::start_bound(&(0..))")
+        && ac.probe_expression("core::ops::RangeBounds::end_bound(&(0..))")
+    {
+        autocfg::emit("impl_range_bounds");
+    }
     ac.set_feature("step_trait");
     ac.set_feature("step_trait_ext");
     ac.set_feature("unchecked_math");

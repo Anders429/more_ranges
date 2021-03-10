@@ -10,6 +10,7 @@
 //! example, [`RangeFrom`] with [`RangeFromExclusive`].
 //!
 //! ```
+//! # #[cfg(impl_range_bounds)] {
 //! use std::ops::{Bound, RangeBounds, RangeFrom};
 //! use more_ranges::RangeFromExclusive;
 //!
@@ -25,10 +26,16 @@
 //!
 //! // Contrastingly, the exclusive range is exclusively bound.
 //! assert_eq!(range_exclusive.start_bound(), Bound::Excluded(&1));
+//! # }
 //! ```
 //!
 //! [`Iterator`]: core::iter::Iterator
 //! [`RangeFrom`]: core::ops::RangeFrom
+#![allow(stable_features)]
+#![cfg_attr(
+    all(rustc_channel_nightly, impl_range_bounds),
+    feature(collections_range)
+)]
 #![cfg_attr(
     all(rustc_channel_nightly, impl_iterator),
     feature(step_trait, step_trait_ext, unchecked_math)
@@ -46,6 +53,7 @@ extern crate claim;
 
 #[cfg(all(impl_iterator, impl_trusted_len))]
 use core::iter::TrustedLen;
+#[cfg(impl_range_bounds)]
 use core::ops::{
     Bound::{self, Excluded, Included, Unbounded},
     RangeBounds,
@@ -84,6 +92,8 @@ pub struct RangeFromExclusive<Idx> {
     pub start: Idx,
 }
 
+#[cfg(impl_range_bounds)]
+#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
@@ -95,6 +105,8 @@ impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     }
 }
 
+#[cfg(impl_range_bounds)]
+#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
@@ -187,6 +199,8 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
     pub end: Idx,
 }
 
+#[cfg(impl_range_bounds)]
+#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     #[inline]
     #[must_use]
@@ -200,6 +214,8 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     }
 }
 
+#[cfg(impl_range_bounds)]
+#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     #[inline]
     #[must_use]
@@ -446,6 +462,8 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
     pub end: Idx,
 }
 
+#[cfg(impl_range_bounds)]
+#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     #[inline]
     #[must_use]
@@ -459,6 +477,8 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     }
 }
 
+#[cfg(impl_range_bounds)]
+#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
     #[inline]
     #[must_use]
@@ -701,12 +721,14 @@ range_from_exclusive_to_exclusive_exact_iter_impl!(char, "32", "64");
 
 #[cfg(test)]
 mod tests {
+    #[cfg(impl_range_bounds)]
     use core::ops::{
         Bound::{Excluded, Included, Unbounded},
         RangeBounds,
     };
     use {RangeFromExclusive, RangeFromExclusiveToExclusive, RangeFromExclusiveToInclusive};
 
+    #[cfg(impl_range_bounds)]
     #[test]
     fn range_from_exclusive_range_bounds() {
         let range = RangeFromExclusive { start: 1 };
@@ -715,6 +737,7 @@ mod tests {
         assert_matches!(range.end_bound(), Unbounded);
     }
 
+    #[cfg(impl_range_bounds)]
     #[test]
     fn range_from_exclusive_range_bounds_borrowed() {
         let range = RangeFromExclusive { start: &1 };
@@ -755,6 +778,7 @@ mod tests {
         assert_some_eq!(RangeFromExclusive { start: 1 }.min(), 2);
     }
 
+    #[cfg(impl_range_bounds)]
     #[test]
     fn range_from_exclusive_to_exclusive_range_bounds() {
         let range = RangeFromExclusiveToExclusive { start: 1, end: 3 };
@@ -763,6 +787,7 @@ mod tests {
         assert_matches!(range.end_bound(), Excluded(3));
     }
 
+    #[cfg(impl_range_bounds)]
     #[test]
     fn range_from_exclusive_to_exclusive_range_bounds_borrowed() {
         let range = RangeFromExclusiveToExclusive { start: &1, end: &3 };
@@ -960,12 +985,41 @@ mod tests {
     #[cfg(impl_iterator)]
     #[test]
     fn range_from_exclusive_to_inclusive_exact_iter_char() {
-        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'a'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'b'}.len(), 1);
-        assert_eq!(RangeFromExclusiveToInclusive {start: 'b', end: 'a'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToInclusive {start: char::from(0), end: core::char::MAX}.len(), core::char::MAX as usize - 0x0800);
+        assert_eq!(
+            RangeFromExclusiveToInclusive {
+                start: 'a',
+                end: 'a'
+            }
+            .len(),
+            0
+        );
+        assert_eq!(
+            RangeFromExclusiveToInclusive {
+                start: 'a',
+                end: 'b'
+            }
+            .len(),
+            1
+        );
+        assert_eq!(
+            RangeFromExclusiveToInclusive {
+                start: 'b',
+                end: 'a'
+            }
+            .len(),
+            0
+        );
+        assert_eq!(
+            RangeFromExclusiveToInclusive {
+                start: char::from(0),
+                end: core::char::MAX
+            }
+            .len(),
+            core::char::MAX as usize - 0x0800
+        );
     }
 
+    #[cfg(impl_range_bounds)]
     #[test]
     fn range_from_exclusive_to_inclusive_range_bounds() {
         let range = RangeFromExclusiveToInclusive { start: 1, end: 3 };
@@ -974,6 +1028,7 @@ mod tests {
         assert_matches!(range.end_bound(), Included(3));
     }
 
+    #[cfg(impl_range_bounds)]
     #[test]
     fn range_from_exclusive_to_inclusive_range_bounds_borrowed() {
         let range = RangeFromExclusiveToInclusive { start: &1, end: &3 };
@@ -1185,10 +1240,45 @@ mod tests {
     #[cfg(impl_iterator)]
     #[test]
     fn range_from_exclusive_to_exclusive_exact_iter_char() {
-        assert_eq!(RangeFromExclusiveToExclusive {start: 'a', end: 'a'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToExclusive {start: 'a', end: 'b'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToExclusive {start: 'b', end: 'a'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToExclusive {start: 'a', end: 'c'}.len(), 1);
-        assert_eq!(RangeFromExclusiveToExclusive {start: char::from(0), end: core::char::MAX}.len(), core::char::MAX as usize - 0x0800 - 1);
+        assert_eq!(
+            RangeFromExclusiveToExclusive {
+                start: 'a',
+                end: 'a'
+            }
+            .len(),
+            0
+        );
+        assert_eq!(
+            RangeFromExclusiveToExclusive {
+                start: 'a',
+                end: 'b'
+            }
+            .len(),
+            0
+        );
+        assert_eq!(
+            RangeFromExclusiveToExclusive {
+                start: 'b',
+                end: 'a'
+            }
+            .len(),
+            0
+        );
+        assert_eq!(
+            RangeFromExclusiveToExclusive {
+                start: 'a',
+                end: 'c'
+            }
+            .len(),
+            1
+        );
+        assert_eq!(
+            RangeFromExclusiveToExclusive {
+                start: char::from(0),
+                end: core::char::MAX
+            }
+            .len(),
+            core::char::MAX as usize - 0x0800 - 1
+        );
     }
 }
