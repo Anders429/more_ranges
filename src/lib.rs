@@ -896,15 +896,6 @@ mod tests {
     );
 
     #[cfg(impl_iterator)]
-    #[test]
-    fn range_from_exclusive_to_inclusive_exact_iter_char() {
-        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'a'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'b'}.len(), 1);
-        assert_eq!(RangeFromExclusiveToInclusive {start: 'b', end: 'a'}.len(), 0);
-        assert_eq!(RangeFromExclusiveToInclusive {start: char::from(0), end: core::char::MAX}.len(), core::char::MAX as usize - 0x0800);
-    }
-
-    #[cfg(impl_iterator)]
     macro_rules! test_range_from_exclusive_to_inclusive_exact_iter_signed {
         ($name:ident, $t:ty, $unsigned_t:ty $(, $($pointer_width:literal),+)?) => {
             #[cfg(all(
@@ -965,6 +956,15 @@ mod tests {
         isize,
         usize
     );
+
+    #[cfg(impl_iterator)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_exact_iter_char() {
+        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'a'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'b'}.len(), 1);
+        assert_eq!(RangeFromExclusiveToInclusive {start: 'b', end: 'a'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToInclusive {start: char::from(0), end: core::char::MAX}.len(), core::char::MAX as usize - 0x0800);
+    }
 
     #[test]
     fn range_from_exclusive_to_inclusive_range_bounds() {
@@ -1059,5 +1059,136 @@ mod tests {
         assert_some_eq!(range.nth_back(0), 6);
         assert_some_eq!(range.nth_back(3), 2);
         assert_none!(range.nth_back(0));
+    }
+
+    #[cfg(impl_iterator)]
+    macro_rules! test_range_from_exclusive_to_exclusive_exact_iter_unsigned {
+        ($name:ident, $t:ty $(, $($pointer_width:literal),+)?) => {
+            #[cfg(all(
+                $(any(
+                    $(target_pointer_width = $pointer_width),+)
+                )?
+            ))]
+            #[test]
+            fn $name() {
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 0, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 0, end: 1}.len(), 0);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 1, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 0, end: 2}.len(), 1);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: <$t>::MIN, end: <$t>::MAX}.len(), <$t>::MAX as usize - 1);
+            }
+        }
+    }
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_exclusive_exact_iter_u8,
+        u8,
+        "16",
+        "32",
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_exclusive_exact_iter_u16,
+        u16,
+        "16",
+        "32",
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_exclusive_exact_iter_u32,
+        u32,
+        "32",
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_exclusive_exact_iter_u64,
+        u64,
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_exclusive_exact_iter_usize,
+        usize
+    );
+
+    #[cfg(impl_iterator)]
+    macro_rules! test_range_from_exclusive_to_exclusive_exact_iter_signed {
+        ($name:ident, $t:ty, $unsigned_t:ty $(, $($pointer_width:literal),+)?) => {
+            #[cfg(all(
+                $(any(
+                    $(target_pointer_width = $pointer_width),+)
+                )?
+            ))]
+            #[test]
+            fn $name() {
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 0, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 0, end: 1}.len(), 0);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 1, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: 0, end: 2}.len(), 1);
+                assert_eq!(RangeFromExclusiveToExclusive::<$t> {start: <$t>::MIN, end: <$t>::MAX}.len(), <$unsigned_t>::MAX as usize - 1);
+            }
+        }
+    }
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_signed!(
+        range_from_exclusive_to_exclusive_exact_iter_i8,
+        i8,
+        u8,
+        "16",
+        "32",
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_signed!(
+        range_from_exclusive_to_exclusive_exact_iter_i16,
+        i16,
+        u16,
+        "16",
+        "32",
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_signed!(
+        range_from_exclusive_to_exclusive_exact_iter_i32,
+        i32,
+        u32,
+        "32",
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_signed!(
+        range_from_exclusive_to_exclusive_exact_iter_i64,
+        i64,
+        u64,
+        "64"
+    );
+
+    #[cfg(impl_iterator)]
+    test_range_from_exclusive_to_exclusive_exact_iter_signed!(
+        range_from_exclusive_to_exclusive_exact_iter_isize,
+        isize,
+        usize
+    );
+
+    #[cfg(impl_iterator)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_exact_iter_char() {
+        assert_eq!(RangeFromExclusiveToExclusive {start: 'a', end: 'a'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToExclusive {start: 'a', end: 'b'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToExclusive {start: 'b', end: 'a'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToExclusive {start: 'a', end: 'c'}.len(), 1);
+        assert_eq!(RangeFromExclusiveToExclusive {start: char::from(0), end: core::char::MAX}.len(), core::char::MAX as usize - 0x0800 - 1);
     }
 }
