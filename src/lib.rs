@@ -419,6 +419,9 @@ range_from_exclusive_to_inclusive_exact_iter_impl!(u8, "16", "32", "64");
 #[cfg(impl_iterator)]
 range_from_exclusive_to_inclusive_exact_iter_impl!(i8, "16", "32", "64");
 
+#[cfg(impl_iterator)]
+range_from_exclusive_to_inclusive_exact_iter_impl!(char, "32", "64");
+
 /// A range bounded exclusively below and above.
 ///
 /// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
@@ -693,6 +696,9 @@ range_from_exclusive_to_exclusive_exact_iter_impl!(u8, "16", "32", "64");
 #[cfg(impl_iterator)]
 range_from_exclusive_to_exclusive_exact_iter_impl!(i8, "16", "32", "64");
 
+#[cfg(impl_iterator)]
+range_from_exclusive_to_exclusive_exact_iter_impl!(char, "32", "64");
+
 #[cfg(test)]
 mod tests {
     use core::ops::{
@@ -882,12 +888,21 @@ mod tests {
         u64,
         "64"
     );
-    
+
     #[cfg(impl_iterator)]
     test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
         range_from_exclusive_to_inclusive_exact_iter_usize,
         usize
     );
+
+    #[cfg(impl_iterator)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_exact_iter_char() {
+        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'a'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToInclusive {start: 'a', end: 'b'}.len(), 1);
+        assert_eq!(RangeFromExclusiveToInclusive {start: 'b', end: 'a'}.len(), 0);
+        assert_eq!(RangeFromExclusiveToInclusive {start: char::from(0), end: core::char::MAX}.len(), core::char::MAX as usize - 0x0800);
+    }
 
     #[cfg(impl_iterator)]
     macro_rules! test_range_from_exclusive_to_inclusive_exact_iter_signed {
