@@ -22,5 +22,8 @@ fn main() {
     if ac.probe_trait("core::iter::TrustedLen") {
         autocfg::emit("impl_trusted_len");
     }
+    if ac.probe_feature("doc_cfg") {
+        autocfg::emit("has_doc_cfg");
+    }
     ac.emit_rustc_channel(Channel::Nightly);
 }

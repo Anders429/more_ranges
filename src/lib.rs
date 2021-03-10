@@ -33,24 +33,28 @@
     all(rustc_channel_nightly, impl_iterator),
     feature(step_trait, step_trait_ext, unchecked_math)
 )]
-#![cfg_attr(all(rustc_channel_nightly, impl_iterator, impl_trusted_len), feature(trusted_len))]
+#![cfg_attr(
+    all(rustc_channel_nightly, impl_iterator, impl_trusted_len),
+    feature(trusted_len)
+)]
+#![cfg_attr(has_doc_cfg, feature(doc_cfg))]
 #![no_std]
 
 #[cfg(test)]
 #[macro_use]
 extern crate claim;
 
+#[cfg(all(impl_iterator, impl_trusted_len))]
+use core::iter::TrustedLen;
 use core::ops::{
     Bound::{self, Excluded, Included, Unbounded},
     RangeBounds,
 };
 #[cfg(impl_iterator)]
 use core::{
-    iter::{FusedIterator, Step},
+    iter::{ExactSizeIterator, FusedIterator, Step},
     mem,
 };
-#[cfg(all(impl_iterator, impl_trusted_len))]
-use core::iter::TrustedLen;
 
 /// A range only bounded exclusively below.
 ///
@@ -352,6 +356,51 @@ impl<T> FusedIterator for RangeFromExclusiveToInclusive<T> where T: Step {}
 )]
 unsafe impl<T> TrustedLen for RangeFromExclusiveToInclusive<T> where T: Step {}
 
+macro_rules! range_from_exclusive_to_inclusive_exact_iter_impl {
+    ($t:ty $(, $($pointer_width:literal),+)?) => {
+        #[cfg(all(
+            impl_iterator,
+            $(any(
+                $(target_pointer_width = $pointer_width),+)
+            )?
+        ))]
+        #[cfg_attr(
+            feature = "doc_item",
+            doc_item::docbox(
+                content = "Only available on <b><code>nightly</code></b>.",
+                class = "nightly"
+            )
+        )]
+        #[cfg_attr(
+            has_doc_cfg,
+            $(doc(cfg(any(
+                $(target_pointer_width = $pointer_width),+
+            ))))?
+        )]
+        impl ExactSizeIterator for RangeFromExclusiveToInclusive<$t> {
+            #[inline]
+            fn len(&self) -> usize {
+                if self.start < self.end {
+                    Step::steps_between(&self.start, &self.end).unwrap()
+                } else {
+                    0
+                }
+            }
+        }
+    }
+}
+
+range_from_exclusive_to_inclusive_exact_iter_impl!(usize);
+range_from_exclusive_to_inclusive_exact_iter_impl!(isize);
+range_from_exclusive_to_inclusive_exact_iter_impl!(u64, "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(i64, "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(u32, "32", "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(i32, "32", "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(u16, "16", "32", "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(i16, "16", "32", "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(u8, "16", "32", "64");
+range_from_exclusive_to_inclusive_exact_iter_impl!(i8, "16", "32", "64");
+
 /// A range bounded exclusively below and above.
 ///
 /// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
@@ -558,6 +607,56 @@ impl<T> FusedIterator for RangeFromExclusiveToExclusive<T> where T: Step {}
 )]
 unsafe impl<T> TrustedLen for RangeFromExclusiveToExclusive<T> where T: Step {}
 
+macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
+    ($t:ty $(, $($pointer_width:literal),+)?) => {
+        #[cfg(all(
+            impl_iterator,
+            $(any(
+                $(target_pointer_width = $pointer_width),+)
+            )?
+        ))]
+        #[cfg_attr(
+            feature = "doc_item",
+            doc_item::docbox(
+                content = "Only available on <b><code>nightly</code></b>.",
+                class = "nightly"
+            )
+        )]
+        #[cfg_attr(
+            has_doc_cfg,
+            $(doc(cfg(any(
+                $(target_pointer_width = $pointer_width),+
+            ))))?
+        )]
+        impl ExactSizeIterator for RangeFromExclusiveToExclusive<$t> {
+            #[inline]
+            fn len(&self) -> usize {
+                if self.start < self.end {
+                    let difference = Step::steps_between(&self.start, &self.end).unwrap();
+                    if difference > 0 {
+                        difference - 1
+                    } else {
+                        0
+                    }
+                } else {
+                    0
+                }
+            }
+        }
+    }
+}
+
+range_from_exclusive_to_exclusive_exact_iter_impl!(usize);
+range_from_exclusive_to_exclusive_exact_iter_impl!(isize);
+range_from_exclusive_to_exclusive_exact_iter_impl!(u64, "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(i64, "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(u32, "32", "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(i32, "32", "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(u16, "16", "32", "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(i16, "16", "32", "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(u8, "16", "32", "64");
+range_from_exclusive_to_exclusive_exact_iter_impl!(i8, "16", "32", "64");
+
 #[cfg(test)]
 mod tests {
     use core::ops::{
@@ -696,6 +795,107 @@ mod tests {
         assert_some_eq!(range.nth_back(3), 2);
         assert_none!(range.nth_back(0));
     }
+
+    macro_rules! test_range_from_exclusive_to_inclusive_exact_iter_unsigned {
+        ($name:ident, $t:ty $(, $($pointer_width:literal),+)?) => {
+            #[cfg(all(
+                impl_iterator,
+                $(any(
+                    $(target_pointer_width = $pointer_width),+)
+                )?
+            ))]
+            #[test]
+            fn $name() {
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: 0, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: 0, end: 1}.len(), 1);
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: 1, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: <$t>::MIN, end: <$t>::MAX}.len(), <$t>::MAX as usize);
+            }
+        }
+    }
+
+    test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_inclusive_exact_iter_u8,
+        u8,
+        "16",
+        "32",
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_inclusive_exact_iter_u16,
+        u16,
+        "16",
+        "32",
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_inclusive_exact_iter_u32,
+        u32,
+        "32",
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_inclusive_exact_iter_u64,
+        u64,
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_unsigned!(
+        range_from_exclusive_to_inclusive_exact_iter_usize,
+        usize
+    );
+
+    macro_rules! test_range_from_exclusive_to_inclusive_exact_iter_signed {
+        ($name:ident, $t:ty, $unsigned_t:ty $(, $($pointer_width:literal),+)?) => {
+            #[cfg(all(
+                impl_iterator,
+                $(any(
+                    $(target_pointer_width = $pointer_width),+)
+                )?
+            ))]
+            #[test]
+            fn $name() {
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: 0, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: 0, end: 1}.len(), 1);
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: 1, end: 0}.len(), 0);
+                assert_eq!(RangeFromExclusiveToInclusive::<$t> {start: <$t>::MIN, end: <$t>::MAX}.len(), <$unsigned_t>::MAX as usize);
+            }
+        }
+    }
+
+    test_range_from_exclusive_to_inclusive_exact_iter_signed!(
+        range_from_exclusive_to_inclusive_exact_iter_i8,
+        i8,
+        u8,
+        "16",
+        "32",
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_signed!(
+        range_from_exclusive_to_inclusive_exact_iter_i16,
+        i16,
+        u16,
+        "16",
+        "32",
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_signed!(
+        range_from_exclusive_to_inclusive_exact_iter_i32,
+        i32,
+        u32,
+        "32",
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_signed!(
+        range_from_exclusive_to_inclusive_exact_iter_i64,
+        i64,
+        u64,
+        "64"
+    );
+    test_range_from_exclusive_to_inclusive_exact_iter_signed!(
+        range_from_exclusive_to_inclusive_exact_iter_isize,
+        isize,
+        usize
+    );
 
     #[test]
     fn range_from_exclusive_to_inclusive_range_bounds() {
