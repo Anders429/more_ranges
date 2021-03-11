@@ -34,8 +34,7 @@ let range_from_exclusive_to_inclusive = RangeFromExclusiveToInclusive { start: 1
 
 ## Minimum Supported Rust Version
 This crate is guaranteed to compile on stable `rustc 1.13.0` and up. Some functionality requires
-later versions. See the [documentation](https://docs.rs/more_ranges/) for version requirements on
-individual items.
+later versions. See the [documentation](https://docs.rs/more_ranges/) for individual requirements.
 
 ## License
 This project is licensed under either of
