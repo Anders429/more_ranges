@@ -4,7 +4,7 @@
 [![codecov.io](https://img.shields.io/codecov/c/gh/Anders429/more_ranges)](https://codecov.io/gh/Anders429/more_ranges)
 [![crates.io](https://img.shields.io/crates/v/more_ranges)](https://crates.io/crates/more_ranges)
 [![docs.rs](https://docs.rs/more_ranges/badge.svg)](https://docs.rs/more_ranges)
-[![MSRV](https://img.shields.io/badge/rustc-1.28.0+-yellow.svg)](#minimum-supported-rust-version)
+[![MSRV](https://img.shields.io/badge/rustc-1.13.0+-yellow.svg)](#minimum-supported-rust-version)
 [![License](https://img.shields.io/crates/l/more_ranges)](#license)
 
 Range types not provided in the standard library.
@@ -33,7 +33,9 @@ let range_from_exclusive_to_inclusive = RangeFromExclusiveToInclusive { start: 1
 ```
 
 ## Minimum Supported Rust Version
-This crate is guaranteed to compile on stable `rustc 1.28.0` and up.
+This crate is guaranteed to compile on stable `rustc 1.13.0` and up. Some functionality requires
+later versions. See the [documentation](https://docs.rs/more_ranges/) for version requirements on
+individual items.
 
 ## License
 This project is licensed under either of
