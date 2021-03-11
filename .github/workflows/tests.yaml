@@ -59,7 +59,7 @@ jobs:
     - uses: actions-rs/cargo@v1
       with:
         command: doc
-        args: --all-features
+        args: --all-features --no-deps
       env:
         RUSTDOCFLAGS: --html-in-header doc/docbox.html
 
