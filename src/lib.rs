@@ -50,19 +50,33 @@
 #[cfg(test)]
 #[macro_use]
 extern crate claim;
+#[cfg(feature = "doc_item")]
+extern crate doc_item;
 
+#[cfg(impl_iterator)]
+use core::iter::ExactSizeIterator;
+#[cfg(impl_iterator)]
+use core::iter::FusedIterator;
+#[cfg(impl_iterator)]
+use core::iter::Step;
 #[cfg(all(impl_iterator, impl_trusted_len))]
 use core::iter::TrustedLen;
-#[cfg(impl_range_bounds)]
-use core::ops::{
-    Bound::{self, Excluded, Included, Unbounded},
-    RangeBounds,
-};
 #[cfg(impl_iterator)]
-use core::{
-    iter::{ExactSizeIterator, FusedIterator, Step},
-    mem,
-};
+use core::mem;
+#[cfg(impl_range_bounds)]
+use core::ops::Bound;
+#[cfg(impl_range_bounds)]
+use core::ops::Bound::Excluded;
+#[cfg(impl_range_bounds)]
+use core::ops::Bound::Included;
+#[cfg(impl_range_bounds)]
+use core::ops::Bound::Unbounded;
+#[cfg(impl_range_bounds)]
+use core::ops::RangeBounds;
+#[cfg(feature = "doc_item")]
+use doc_item::docbox;
+#[cfg(feature = "doc_item")]
+use doc_item::since;
 
 /// A range only bounded exclusively below.
 ///
@@ -93,7 +107,7 @@ pub struct RangeFromExclusive<Idx> {
 }
 
 #[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
+#[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
@@ -106,7 +120,7 @@ impl<T> RangeBounds<T> for RangeFromExclusive<T> {
 }
 
 #[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
+#[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
@@ -121,7 +135,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -158,7 +172,7 @@ where
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -168,7 +182,7 @@ impl<T> FusedIterator for RangeFromExclusive<T> where T: Step {}
 #[cfg(all(impl_iterator, impl_trusted_len))]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -200,7 +214,7 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
 }
 
 #[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
+#[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     #[inline]
     #[must_use]
@@ -215,7 +229,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
 }
 
 #[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
+#[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     #[inline]
     #[must_use]
@@ -232,7 +246,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -307,7 +321,7 @@ where
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -355,7 +369,7 @@ where
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -365,7 +379,7 @@ impl<T> FusedIterator for RangeFromExclusiveToInclusive<T> where T: Step {}
 #[cfg(all(impl_iterator, impl_trusted_len))]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -381,7 +395,7 @@ macro_rules! range_from_exclusive_to_inclusive_exact_iter_impl {
         ))]
         #[cfg_attr(
             feature = "doc_item",
-            doc_item::docbox(
+            docbox(
                 content = "Only available on <b><code>nightly</code></b>.",
                 class = "nightly"
             )
@@ -463,7 +477,7 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
 }
 
 #[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
+#[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     #[inline]
     #[must_use]
@@ -478,7 +492,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
 }
 
 #[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", doc_item::since("1.28.0"))]
+#[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
     #[inline]
     #[must_use]
@@ -495,7 +509,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -579,7 +593,7 @@ where
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -631,7 +645,7 @@ where
 #[cfg(impl_iterator)]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -641,7 +655,7 @@ impl<T> FusedIterator for RangeFromExclusiveToExclusive<T> where T: Step {}
 #[cfg(all(impl_iterator, impl_trusted_len))]
 #[cfg_attr(
     feature = "doc_item",
-    doc_item::docbox(
+    docbox(
         content = "Only available on <b><code>nightly</code></b>.",
         class = "nightly"
     )
@@ -657,7 +671,7 @@ macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
         ))]
         #[cfg_attr(
             feature = "doc_item",
-            doc_item::docbox(
+            docbox(
                 content = "Only available on <b><code>nightly</code></b>.",
                 class = "nightly"
             )
@@ -722,11 +736,16 @@ range_from_exclusive_to_exclusive_exact_iter_impl!(char, "32", "64");
 #[cfg(test)]
 mod tests {
     #[cfg(impl_range_bounds)]
-    use core::ops::{
-        Bound::{Excluded, Included, Unbounded},
-        RangeBounds,
-    };
-    use {RangeFromExclusive, RangeFromExclusiveToExclusive, RangeFromExclusiveToInclusive};
+    use core::ops::Bound::Excluded;
+    #[cfg(impl_range_bounds)]
+    use core::ops::Bound::Included;
+    #[cfg(impl_range_bounds)]
+    use core::ops::Bound::Unbounded;
+    #[cfg(impl_range_bounds)]
+    use core::ops::RangeBounds;
+    use RangeFromExclusive;
+    use RangeFromExclusiveToExclusive;
+    use RangeFromExclusiveToInclusive;
 
     #[cfg(impl_range_bounds)]
     #[test]
