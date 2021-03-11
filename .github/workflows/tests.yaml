@@ -55,12 +55,12 @@ jobs:
       with:
         toolchain: nightly
         override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: doc
-          args: --all-features
-        env:
-          RUSTDOCFLAGS: --html-in-header doc/docbox.html
+    - uses: actions-rs/cargo@v1
+      with:
+        command: doc
+        args: --all-features
+      env:
+        RUSTDOCFLAGS: --html-in-header doc/docbox.html
 
 
   codecov:
