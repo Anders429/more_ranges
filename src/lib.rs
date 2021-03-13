@@ -72,6 +72,10 @@ use core::ops::Bound::Excluded;
 use core::ops::Bound::Included;
 #[cfg(impl_range_bounds)]
 use core::ops::Bound::Unbounded;
+#[cfg(rustc_1_41)]
+use core::ops::Index;
+#[cfg(rustc_1_41)]
+use core::ops::IndexMut;
 #[cfg(impl_range_bounds)]
 use core::ops::RangeBounds;
 #[cfg(feature = "doc_item")]
@@ -105,6 +109,33 @@ use doc_item::since;
 pub struct RangeFromExclusive<Idx> {
     /// The lower bound of the range (exclusive).
     pub start: Idx,
+}
+
+#[cfg(rustc_1_41)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> Index<RangeFromExclusive<usize>> for [T] {
+    type Output = [T];
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusive<usize>) -> &[T] {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &self[(index.start + 1)..self.len()]
+    }
+}
+
+#[cfg(rustc_1_41)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> IndexMut<RangeFromExclusive<usize>> for [T] {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut [T] {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        let len = self.len();
+        &mut self[(index.start + 1)..len]
+    }
 }
 
 #[cfg(impl_range_bounds)]
@@ -742,11 +773,63 @@ mod tests {
     use core::ops::Bound::Included;
     #[cfg(impl_range_bounds)]
     use core::ops::Bound::Unbounded;
+    #[cfg(rustc_1_41)]
+    use core::ops::IndexMut;
     #[cfg(impl_range_bounds)]
     use core::ops::RangeBounds;
     use RangeFromExclusive;
     use RangeFromExclusiveToExclusive;
     use RangeFromExclusiveToInclusive;
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    fn range_from_exclusive_index_slice() {
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusive { start: 1 }], [2, 3, 4]);
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusive { start: 4 }], []);
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_slice_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusive { start: 5 }];
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_slice_from_max() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusive {
+            start: core::usize::MAX,
+        }];
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    fn range_from_exclusive_index_mut_slice() {
+        let mut slice = [0, 1, 2, 3, 4];
+
+        slice[RangeFromExclusive { start: 1 }][0] = 5;
+
+        assert_eq!(slice, [0, 1, 5, 3, 4]);
+        assert_eq!(slice.index_mut(RangeFromExclusive { start: 4 }), []);
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_slice_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusive { start: 5 });
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_slice_from_max() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusive {
+            start: core::usize::MAX,
+        });
+    }
 
     #[cfg(impl_range_bounds)]
     #[test]

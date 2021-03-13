@@ -5,6 +5,7 @@ use autocfg::Channel;
 fn main() {
     let mut ac = autocfg::new();
 
+    ac.emit_rustc_version(1, 41);
     ac.set_feature("collections_range");
     if ac.probe_trait("core::ops::RangeBounds<usize>")
         && ac.probe_expression("core::ops::RangeBounds::start_bound(&(0..))")
