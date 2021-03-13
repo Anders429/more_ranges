@@ -138,6 +138,20 @@ impl<T> IndexMut<RangeFromExclusive<usize>> for [T] {
     }
 }
 
+#[cfg(rustc_1_41)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl Index<RangeFromExclusive<usize>> for str {
+    type Output = str;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusive<usize>) -> &str {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &self[(index.start + 1)..self.len()]
+    }
+}
+
 #[cfg(impl_range_bounds)]
 #[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusive<T> {
@@ -829,6 +843,29 @@ mod tests {
         let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusive {
             start: core::usize::MAX,
         });
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    fn range_from_exclusive_index_str() {
+        assert_eq!(&"abcde"[RangeFromExclusive { start: 1 }], "cde");
+        assert_eq!(&"abcde"[RangeFromExclusive { start: 4 }], "");
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_str_out_of_bounds() {
+        let _ = "abcde"[RangeFromExclusive { start: 5 }];
+    }
+
+    #[cfg(rustc_1_41)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_str_from_max() {
+        let _ = "abcde"[RangeFromExclusive {
+            start: core::usize::MAX,
+        }];
     }
 
     #[cfg(impl_range_bounds)]
