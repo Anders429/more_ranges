@@ -537,6 +537,7 @@ macro_rules! range_from_exclusive_to_inclusive_exact_iter_impl {
                 class = "nightly"
             )
         )]
+        #[allow(unused_attributes)]
         #[cfg_attr(
             has_doc_cfg,
             $(doc(cfg(any(
@@ -813,6 +814,7 @@ macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
                 class = "nightly"
             )
         )]
+        #[allow(unused_attributes)]
         #[cfg_attr(
             has_doc_cfg,
             $(doc(cfg(any(
