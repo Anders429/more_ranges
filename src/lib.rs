@@ -58,6 +58,8 @@ extern crate doc_item;
 
 #[cfg(impl_index)]
 use alloc::string::String;
+#[cfg(impl_index)]
+use alloc::vec::Vec;
 #[cfg(impl_iterator)]
 use core::iter::ExactSizeIterator;
 #[cfg(impl_iterator)]
@@ -186,6 +188,26 @@ impl IndexMut<RangeFromExclusive<usize>> for String {
     #[inline]
     fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut str {
         &mut self[..][index]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> Index<RangeFromExclusive<usize>> for Vec<T> {
+    type Output = [T];
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusive<usize>) -> &[T] {
+        Index::index(&**self, index)
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> IndexMut<RangeFromExclusive<usize>> for Vec<T> {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut [T] {
+        IndexMut::index_mut(&mut **self, index)
     }
 }
 
@@ -820,6 +842,8 @@ range_from_exclusive_to_exclusive_exact_iter_impl!(char, "32", "64");
 mod tests {
     #[cfg(impl_index)]
     use alloc::borrow::ToOwned;
+    #[cfg(impl_index)]
+    use alloc::vec;
     #[cfg(impl_range_bounds)]
     use core::ops::Bound::Excluded;
     #[cfg(impl_range_bounds)]
@@ -979,6 +1003,56 @@ mod tests {
     #[should_panic]
     fn range_from_exclusive_index_mut_string_from_max() {
         let _ = "abcde".to_owned().index_mut(RangeFromExclusive {
+            start: core::usize::MAX,
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_index_vec() {
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusive { start: 1 }], [2, 3, 4]);
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusive { start: 4 }], []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_vec_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusive { start: 5 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_vec_from_max() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusive {
+            start: core::usize::MAX,
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_index_mut_vec() {
+        let mut v = vec![0, 1, 2, 3, 4];
+
+        v[RangeFromExclusive { start: 1 }][0] = 5;
+
+        assert_eq!(v, [0, 1, 5, 3, 4]);
+        assert_eq!(v.index_mut(RangeFromExclusive { start: 4 }), []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_vec_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusive { start: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_vec_from_max() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusive {
             start: core::usize::MAX,
         });
     }
