@@ -56,6 +56,8 @@ extern crate claim;
 #[cfg(feature = "doc_item")]
 extern crate doc_item;
 
+#[cfg(impl_index)]
+use alloc::string::String;
 #[cfg(impl_iterator)]
 use core::iter::ExactSizeIterator;
 #[cfg(impl_iterator)]
@@ -164,6 +166,26 @@ impl IndexMut<RangeFromExclusive<usize>> for str {
         }
         let len = self.len();
         &mut self[(index.start + 1)..len]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl Index<RangeFromExclusive<usize>> for String {
+    type Output = str;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusive<usize>) -> &str {
+        &self[..][index]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl IndexMut<RangeFromExclusive<usize>> for String {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut str {
+        &mut self[..][index]
     }
 }
 
@@ -909,6 +931,54 @@ mod tests {
     #[should_panic]
     fn range_from_exclusive_index_mut_str_from_max() {
         let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusive {
+            start: core::usize::MAX,
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_index_string() {
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusive { start: 1 }], "cde");
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusive { start: 4 }], "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_string_out_of_bounds() {
+        let _ = "abcde".to_owned()[RangeFromExclusive { start: 5 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_string_max() {
+        let _ = "abcde".to_owned()[RangeFromExclusive { start: core::usize::MAX }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_index_mut_string() {
+        let mut s = "abcde".to_owned();
+
+        s[RangeFromExclusive{start: 1}].make_ascii_uppercase();
+
+        assert_eq!(s, "abCDE");
+        assert_eq!(s.index_mut(RangeFromExclusive { start: 4 }), "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_string_out_of_bounds() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusive { start: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_string_from_max() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusive {
             start: core::usize::MAX,
         });
     }
