@@ -48,6 +48,8 @@
 #![cfg_attr(has_doc_cfg, feature(doc_cfg))]
 #![no_std]
 
+#[cfg(impl_index)]
+extern crate alloc;
 #[cfg(test)]
 #[macro_use]
 extern crate claim;
@@ -72,9 +74,9 @@ use core::ops::Bound::Excluded;
 use core::ops::Bound::Included;
 #[cfg(impl_range_bounds)]
 use core::ops::Bound::Unbounded;
-#[cfg(rustc_1_41)]
+#[cfg(impl_index)]
 use core::ops::Index;
-#[cfg(rustc_1_41)]
+#[cfg(impl_index)]
 use core::ops::IndexMut;
 #[cfg(impl_range_bounds)]
 use core::ops::RangeBounds;
@@ -111,7 +113,7 @@ pub struct RangeFromExclusive<Idx> {
     pub start: Idx,
 }
 
-#[cfg(rustc_1_41)]
+#[cfg(impl_index)]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> Index<RangeFromExclusive<usize>> for [T] {
     type Output = [T];
@@ -125,7 +127,7 @@ impl<T> Index<RangeFromExclusive<usize>> for [T] {
     }
 }
 
-#[cfg(rustc_1_41)]
+#[cfg(impl_index)]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> IndexMut<RangeFromExclusive<usize>> for [T] {
     #[inline]
@@ -138,7 +140,7 @@ impl<T> IndexMut<RangeFromExclusive<usize>> for [T] {
     }
 }
 
-#[cfg(rustc_1_41)]
+#[cfg(impl_index)]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl Index<RangeFromExclusive<usize>> for str {
     type Output = str;
@@ -149,6 +151,19 @@ impl Index<RangeFromExclusive<usize>> for str {
             panic!("attempted to index slice exclusively from maximum usize");
         }
         &self[(index.start + 1)..self.len()]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl IndexMut<RangeFromExclusive<usize>> for str {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut str {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        let len = self.len();
+        &mut self[(index.start + 1)..len]
     }
 }
 
@@ -781,13 +796,15 @@ range_from_exclusive_to_exclusive_exact_iter_impl!(char, "32", "64");
 
 #[cfg(test)]
 mod tests {
+    #[cfg(impl_index)]
+    use alloc::borrow::ToOwned;
     #[cfg(impl_range_bounds)]
     use core::ops::Bound::Excluded;
     #[cfg(impl_range_bounds)]
     use core::ops::Bound::Included;
     #[cfg(impl_range_bounds)]
     use core::ops::Bound::Unbounded;
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     use core::ops::IndexMut;
     #[cfg(impl_range_bounds)]
     use core::ops::RangeBounds;
@@ -795,21 +812,21 @@ mod tests {
     use RangeFromExclusiveToExclusive;
     use RangeFromExclusiveToInclusive;
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     fn range_from_exclusive_index_slice() {
         assert_eq!([0, 1, 2, 3, 4][RangeFromExclusive { start: 1 }], [2, 3, 4]);
         assert_eq!([0, 1, 2, 3, 4][RangeFromExclusive { start: 4 }], []);
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_slice_out_of_bounds() {
         let _ = [0, 1, 2, 3, 4][RangeFromExclusive { start: 5 }];
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_slice_from_max() {
@@ -818,7 +835,7 @@ mod tests {
         }];
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     fn range_from_exclusive_index_mut_slice() {
         let mut slice = [0, 1, 2, 3, 4];
@@ -829,14 +846,14 @@ mod tests {
         assert_eq!(slice.index_mut(RangeFromExclusive { start: 4 }), []);
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_slice_out_of_bounds() {
         let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusive { start: 5 });
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_slice_from_max() {
@@ -845,27 +862,55 @@ mod tests {
         });
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     fn range_from_exclusive_index_str() {
         assert_eq!(&"abcde"[RangeFromExclusive { start: 1 }], "cde");
         assert_eq!(&"abcde"[RangeFromExclusive { start: 4 }], "");
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_str_out_of_bounds() {
         let _ = "abcde"[RangeFromExclusive { start: 5 }];
     }
 
-    #[cfg(rustc_1_41)]
+    #[cfg(impl_index)]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_str_from_max() {
         let _ = "abcde"[RangeFromExclusive {
             start: core::usize::MAX,
         }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_index_mut_str() {
+        let mut s = "abcde".to_owned();
+        let mut_s = s.as_mut_str();
+
+        mut_s[RangeFromExclusive{start: 1}].make_ascii_uppercase();
+
+        assert_eq!(mut_s, "abCDE");
+        assert_eq!(mut_s.index_mut(RangeFromExclusive { start: 4 }), "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_str_out_of_bounds() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusive { start: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_mut_str_from_max() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusive {
+            start: core::usize::MAX,
+        });
     }
 
     #[cfg(impl_range_bounds)]
