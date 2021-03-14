@@ -350,6 +350,26 @@ impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for [T] {
     }
 }
 
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> Index<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
+    type Output = [T];
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &[T] {
+        Index::index(&**self, index)
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut [T] {
+        IndexMut::index_mut(&mut **self, index)
+    }
+}
+
 #[cfg(impl_range_bounds)]
 #[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
@@ -1224,6 +1244,94 @@ mod tests {
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_slice_to_max() {
         let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_index_vec() {
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 1, end: 3 }], [2, 3]);
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 4, end: 4 }], []);
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 0, end: 0 }], []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_vec_partially_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 3, end: 5 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_vec_fully_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_vec_from_max() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_vec_to_max() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_index_mut_vec() {
+        let mut v = vec![0, 1, 2, 3, 4];
+
+        v[RangeFromExclusiveToInclusive { start: 1, end: 3 }][0] = 5;
+
+        assert_eq!(v, [0, 1, 5, 3, 4]);
+        assert_eq!(v.index_mut(RangeFromExclusiveToInclusive { start: 4, end: 4 }), []);
+        assert_eq!(v.index_mut(RangeFromExclusiveToInclusive { start: 0, end: 0 }), []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_vec_partially_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_vec_fully_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_vec_from_max() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_vec_to_max() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive {
             start: 1,
             end: core::usize::MAX
         });
