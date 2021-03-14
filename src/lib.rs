@@ -318,6 +318,38 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
     pub end: Idx,
 }
 
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> Index<RangeFromExclusiveToInclusive<usize>> for [T] {
+    type Output = [T];
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &[T] {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        if index.end == core::usize::MAX {
+            panic!("attempted to index slice inclusively to maximum usize");
+        }
+        &self[(index.start + 1)..(index.end + 1)]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for [T] {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut [T] {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        if index.end == core::usize::MAX {
+            panic!("attempted to index slice inclusively to maximum usize");
+        }
+        &mut self[(index.start + 1)..(index.end + 1)]
+    }
+}
+
 #[cfg(impl_range_bounds)]
 #[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
@@ -1107,22 +1139,110 @@ mod tests {
         assert_some_eq!(RangeFromExclusive { start: 1 }.min(), 2);
     }
 
-    #[cfg(impl_range_bounds)]
+    #[cfg(impl_index)]
     #[test]
-    fn range_from_exclusive_to_exclusive_range_bounds() {
-        let range = RangeFromExclusiveToExclusive { start: 1, end: 3 };
+    fn range_from_exclusive_to_inclusive_index_slice() {
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 1, end: 3 }], [2, 3]);
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 4, end: 4 }], []);
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 0, end: 0 }], []);
+    }
 
-        assert_matches!(range.start_bound(), Excluded(1));
-        assert_matches!(range.end_bound(), Excluded(3));
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_slice_partially_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 3, end: 5 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_slice_fully_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_slice_from_max() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_slice_to_max() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_index_mut_slice() {
+        let mut slice = [0, 1, 2, 3, 4];
+
+        slice[RangeFromExclusiveToInclusive { start: 1, end: 3 }][0] = 5;
+
+        assert_eq!(slice, [0, 1, 5, 3, 4]);
+        assert_eq!(slice.index_mut(RangeFromExclusiveToInclusive { start: 4, end: 4 }), []);
+        assert_eq!(slice.index_mut(RangeFromExclusiveToInclusive { start: 0, end: 0 }), []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_slice_partially_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_slice_fully_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_slice_from_max() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_slice_to_max() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        });
     }
 
     #[cfg(impl_range_bounds)]
     #[test]
-    fn range_from_exclusive_to_exclusive_range_bounds_borrowed() {
-        let range = RangeFromExclusiveToExclusive { start: &1, end: &3 };
+    fn range_from_exclusive_to_inclusive_range_bounds() {
+        let range = RangeFromExclusiveToInclusive { start: 1, end: 3 };
+
+        assert_matches!(range.start_bound(), Excluded(1));
+        assert_matches!(range.end_bound(), Included(3));
+    }
+
+    #[cfg(impl_range_bounds)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_range_bounds_borrowed() {
+        let range = RangeFromExclusiveToInclusive { start: &1, end: &3 };
 
         assert_matches!(RangeBounds::<usize>::start_bound(&range), Excluded(1));
-        assert_matches!(RangeBounds::<usize>::end_bound(&range), Excluded(3));
+        assert_matches!(RangeBounds::<usize>::end_bound(&range), Included(3));
     }
 
     #[cfg(impl_iterator)]
@@ -1350,20 +1470,20 @@ mod tests {
 
     #[cfg(impl_range_bounds)]
     #[test]
-    fn range_from_exclusive_to_inclusive_range_bounds() {
-        let range = RangeFromExclusiveToInclusive { start: 1, end: 3 };
+    fn range_from_exclusive_to_exclusive_range_bounds() {
+        let range = RangeFromExclusiveToExclusive { start: 1, end: 3 };
 
         assert_matches!(range.start_bound(), Excluded(1));
-        assert_matches!(range.end_bound(), Included(3));
+        assert_matches!(range.end_bound(), Excluded(3));
     }
 
     #[cfg(impl_range_bounds)]
     #[test]
-    fn range_from_exclusive_to_inclusive_range_bounds_borrowed() {
-        let range = RangeFromExclusiveToInclusive { start: &1, end: &3 };
+    fn range_from_exclusive_to_exclusive_range_bounds_borrowed() {
+        let range = RangeFromExclusiveToExclusive { start: &1, end: &3 };
 
         assert_matches!(RangeBounds::<usize>::start_bound(&range), Excluded(1));
-        assert_matches!(RangeBounds::<usize>::end_bound(&range), Included(3));
+        assert_matches!(RangeBounds::<usize>::end_bound(&range), Excluded(3));
     }
 
     #[cfg(impl_iterator)]
