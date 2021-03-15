@@ -370,6 +370,38 @@ impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
     }
 }
 
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl Index<RangeFromExclusiveToInclusive<usize>> for str {
+    type Output = str;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &str {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        if index.end == core::usize::MAX {
+            panic!("attempted to index slice inclusively to maximum usize");
+        }
+        &self[(index.start + 1)..(index.end + 1)]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl IndexMut<RangeFromExclusiveToInclusive<usize>> for str {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut str {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        if index.end == core::usize::MAX {
+            panic!("attempted to index slice inclusively to maximum usize");
+        }
+        &mut self[(index.start + 1)..(index.end + 1)]
+    }
+}
+
 #[cfg(impl_range_bounds)]
 #[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
@@ -1247,6 +1279,48 @@ mod tests {
             start: 1,
             end: core::usize::MAX
         });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_index_str() {
+        assert_eq!(&"abcde"[RangeFromExclusiveToInclusive { start: 1, end: 3 }], "cd");
+        assert_eq!(&"abcde"[RangeFromExclusiveToInclusive { start: 4, end: 4 }], "");
+        assert_eq!(&"abcde"[RangeFromExclusiveToInclusive { start: 0, end: 0 }], "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_str_partially_out_of_bounds() {
+        let _ = "abcde"[RangeFromExclusiveToInclusive { start: 3, end: 5 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_str_fully_out_of_bounds() {
+        let _ = "abcde"[RangeFromExclusiveToInclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_str_from_max() {
+        let _ = "abcde"[RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_str_to_max() {
+        let _ = "abcde"[RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        }];
     }
 
     #[cfg(impl_index)]
