@@ -1323,6 +1323,51 @@ mod tests {
         }];
     }
 
+    fn range_from_exclusive_to_inclusive_index_mut_str() {
+        let mut s = "abcde".to_owned();
+        let mut_s = s.as_mut_str();
+
+        mut_s[RangeFromExclusiveToInclusive{start: 1, end: 3}].make_ascii_uppercase();
+
+        assert_eq!(mut_s, "abCDe");
+        assert_eq!(mut_s.index_mut(RangeFromExclusiveToInclusive { start: 4, end:4 }), "");
+        assert_eq!(mut_s.index_mut(RangeFromExclusiveToInclusive { start: 0, end:0 }), "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_str_partially_out_of_bounds() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_str_fully_out_of_bounds() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_str_from_max() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_str_to_max() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        });
+    }
+
     #[cfg(impl_index)]
     #[test]
     fn range_from_exclusive_to_inclusive_index_vec() {
