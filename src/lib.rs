@@ -402,6 +402,26 @@ impl IndexMut<RangeFromExclusiveToInclusive<usize>> for str {
     }
 }
 
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl Index<RangeFromExclusiveToInclusive<usize>> for String {
+    type Output = str;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &str {
+        &self[..][index]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl IndexMut<RangeFromExclusiveToInclusive<usize>> for String {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut str {
+        &mut self[..][index]
+    }
+}
+
 #[cfg(impl_range_bounds)]
 #[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
@@ -1323,6 +1343,8 @@ mod tests {
         }];
     }
 
+    #[cfg(impl_index)]
+    #[test]
     fn range_from_exclusive_to_inclusive_index_mut_str() {
         let mut s = "abcde".to_owned();
         let mut_s = s.as_mut_str();
@@ -1363,6 +1385,94 @@ mod tests {
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_str_to_max() {
         let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_index_string() {
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusiveToInclusive { start: 1, end: 3 }], "cd");
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusiveToInclusive { start: 4, end: 4 }], "");
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusiveToInclusive { start: 0, end: 0 }], "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_string_partially_out_of_bounds() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToInclusive { start: 3, end: 5 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_string_fully_out_of_bounds() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToInclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_string_from_max() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_string_to_max() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToInclusive {
+            start: 1,
+            end: core::usize::MAX
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_inclusive_index_mut_string() {
+        let mut s = "abcde".to_owned();
+
+        s[RangeFromExclusiveToInclusive{start: 1, end: 3}].make_ascii_uppercase();
+
+        assert_eq!(s, "abCDe");
+        assert_eq!(s.index_mut(RangeFromExclusiveToInclusive { start: 4, end:4 }), "");
+        assert_eq!(s.index_mut(RangeFromExclusiveToInclusive { start: 0, end:0 }), "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_string_partially_out_of_bounds() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_string_fully_out_of_bounds() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_string_from_max() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToInclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_inclusive_index_mut_string_to_max() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToInclusive {
             start: 1,
             end: core::usize::MAX
         });
