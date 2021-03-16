@@ -686,6 +686,98 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
     pub end: Idx,
 }
 
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> Index<RangeFromExclusiveToExclusive<usize>> for [T] {
+    type Output = [T];
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToExclusive<usize>) -> &[T] {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &self[(index.start + 1)..index.end]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> IndexMut<RangeFromExclusiveToExclusive<usize>> for [T] {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToExclusive<usize>) -> &mut [T] {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &mut self[(index.start + 1)..index.end]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> Index<RangeFromExclusiveToExclusive<usize>> for Vec<T> {
+    type Output = [T];
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToExclusive<usize>) -> &[T] {
+        Index::index(&**self, index)
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl<T> IndexMut<RangeFromExclusiveToExclusive<usize>> for Vec<T> {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToExclusive<usize>) -> &mut [T] {
+        IndexMut::index_mut(&mut **self, index)
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl Index<RangeFromExclusiveToExclusive<usize>> for str {
+    type Output = str;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToExclusive<usize>) -> &str {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &self[(index.start + 1)..index.end]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl IndexMut<RangeFromExclusiveToExclusive<usize>> for str {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToExclusive<usize>) -> &mut str {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &mut self[(index.start + 1)..index.end]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl Index<RangeFromExclusiveToExclusive<usize>> for String {
+    type Output = str;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusiveToExclusive<usize>) -> &str {
+        &self[..][index]
+    }
+}
+
+#[cfg(impl_index)]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+impl IndexMut<RangeFromExclusiveToExclusive<usize>> for String {
+    #[inline]
+    fn index_mut(&mut self, index: RangeFromExclusiveToExclusive<usize>) -> &mut str {
+        &mut self[..][index]
+    }
+}
+
 #[cfg(impl_range_bounds)]
 #[cfg_attr(feature = "doc_item", since("1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
@@ -1805,6 +1897,279 @@ mod tests {
             .len(),
             core::char::MAX as usize - 0x0800
         );
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_slice() {
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 1, end: 3 }], [2]);
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 4, end: 5 }], []);
+        assert_eq!([0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 0, end: 1 }], []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_slice_partially_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 3, end: 6 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_slice_fully_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_slice_from_max() {
+        let _ = [0, 1, 2, 3, 4][RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_mut_slice() {
+        let mut slice = [0, 1, 2, 3, 4];
+
+        slice[RangeFromExclusiveToExclusive { start: 1, end: 3 }][0] = 5;
+
+        assert_eq!(slice, [0, 1, 5, 3, 4]);
+        assert_eq!(slice.index_mut(RangeFromExclusiveToExclusive { start: 4, end: 5 }), []);
+        assert_eq!(slice.index_mut(RangeFromExclusiveToExclusive { start: 0, end: 1 }), []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_slice_partially_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_slice_fully_out_of_bounds() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_slice_from_max() {
+        let _ = [0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_str() {
+        assert_eq!(&"abcde"[RangeFromExclusiveToExclusive { start: 1, end: 3 }], "c");
+        assert_eq!(&"abcde"[RangeFromExclusiveToExclusive { start: 4, end: 5 }], "");
+        assert_eq!(&"abcde"[RangeFromExclusiveToExclusive { start: 0, end: 1 }], "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_str_partially_out_of_bounds() {
+        let _ = "abcde"[RangeFromExclusiveToExclusive { start: 3, end: 6 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_str_fully_out_of_bounds() {
+        let _ = "abcde"[RangeFromExclusiveToExclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_str_from_max() {
+        let _ = "abcde"[RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_mut_str() {
+        let mut s = "abcde".to_owned();
+        let mut_s = s.as_mut_str();
+
+        mut_s[RangeFromExclusiveToExclusive{start: 1, end: 3}].make_ascii_uppercase();
+
+        assert_eq!(mut_s, "abCde");
+        assert_eq!(mut_s.index_mut(RangeFromExclusiveToExclusive { start: 4, end:5 }), "");
+        assert_eq!(mut_s.index_mut(RangeFromExclusiveToExclusive { start: 0, end:1 }), "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_str_partially_out_of_bounds() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_str_fully_out_of_bounds() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_str_from_max() {
+        let _ = "abcde".to_owned().as_mut_str().index_mut(RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_string() {
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusiveToExclusive { start: 1, end: 3 }], "c");
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusiveToExclusive { start: 4, end: 5 }], "");
+        assert_eq!(&"abcde".to_owned()[RangeFromExclusiveToExclusive { start: 0, end: 1 }], "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_string_partially_out_of_bounds() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToExclusive { start: 3, end: 6 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_string_fully_out_of_bounds() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToExclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_string_from_max() {
+        let _ = "abcde".to_owned()[RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_mut_string() {
+        let mut s = "abcde".to_owned();
+
+        s[RangeFromExclusiveToExclusive{start: 1, end: 3}].make_ascii_uppercase();
+
+        assert_eq!(s, "abCde");
+        assert_eq!(s.index_mut(RangeFromExclusiveToExclusive { start: 4, end:5 }), "");
+        assert_eq!(s.index_mut(RangeFromExclusiveToExclusive { start: 0, end:1 }), "");
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_string_partially_out_of_bounds() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_string_fully_out_of_bounds() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_string_from_max() {
+        let _ = "abcde".to_owned().index_mut(RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_vec() {
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 1, end: 3 }], [2]);
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 4, end: 5 }], []);
+        assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 0, end: 1 }], []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_vec_partially_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 3, end: 6 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_vec_fully_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 5, end: 7 }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_vec_from_max() {
+        let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        }];
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_index_mut_vec() {
+        let mut v = vec![0, 1, 2, 3, 4];
+
+        v[RangeFromExclusiveToExclusive { start: 1, end: 3 }][0] = 5;
+
+        assert_eq!(v, [0, 1, 5, 3, 4]);
+        assert_eq!(v.index_mut(RangeFromExclusiveToExclusive { start: 4, end: 5 }), []);
+        assert_eq!(v.index_mut(RangeFromExclusiveToExclusive { start: 0, end: 1 }), []);
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_vec_partially_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_vec_fully_out_of_bounds() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
+    }
+
+    #[cfg(impl_index)]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_to_exclusive_index_mut_vec_from_max() {
+        let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive {
+            start: core::usize::MAX,
+            end: 3
+        });
     }
 
     #[cfg(impl_range_bounds)]
