@@ -17,7 +17,7 @@ are:
 - [`RangeFromExclusiveToInclusive`](https://docs.rs/more_ranges/*/more_ranges/struct.RangeFromExclusiveToInclusive.html)
 
 These ranges operate nearly the same as those in
-[`std::ops`](https://doc.rust-lang.org/std/ops/index.html). However, they can not be used in
+[`std::ops`](https://doc.rust-lang.org/std/ops/index.html). However, they cannot be used in
 indexing, and [`Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html) functionality is
 only available on `nightly`.
 
