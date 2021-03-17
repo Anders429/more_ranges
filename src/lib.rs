@@ -1134,7 +1134,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_index_mut_str() {
         let mut s = "abcde".to_owned();
@@ -1146,7 +1146,7 @@ mod tests {
         assert_eq!(mut_s.index_mut(RangeFromExclusive { start: 4 }), "");
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_str_out_of_bounds() {
@@ -1156,7 +1156,7 @@ mod tests {
             .index_mut(RangeFromExclusive { start: 5 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_str_from_max() {
@@ -1477,7 +1477,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_inclusive_index_mut_str() {
         let mut s = "abcde".to_owned();
@@ -1496,7 +1496,7 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_str_partially_out_of_bounds() {
@@ -1506,7 +1506,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_str_fully_out_of_bounds() {
@@ -1516,7 +1516,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_str_from_max() {
@@ -1529,7 +1529,7 @@ mod tests {
             });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_str_to_max() {
@@ -2117,7 +2117,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_exclusive_index_mut_str() {
         let mut s = "abcde".to_owned();
@@ -2136,7 +2136,7 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_str_partially_out_of_bounds() {
@@ -2146,7 +2146,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_str_fully_out_of_bounds() {
@@ -2156,7 +2156,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_str_from_max() {
