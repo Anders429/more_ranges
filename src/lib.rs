@@ -49,7 +49,7 @@
     all(rustc_channel_nightly, impl_iterator, impl_trusted_len),
     feature(trusted_len)
 )]
-#![cfg_attr(has_doc_cfg, feature(doc_cfg))]
+#![cfg_attr(all(rustc_channel_nightly, doc_cfg), feature(doc_cfg))]
 #![no_std]
 
 #[cfg(impl_index)]
@@ -615,7 +615,7 @@ macro_rules! range_from_exclusive_to_inclusive_exact_iter_impl {
         )]
         #[allow(unused_attributes)]
         #[cfg_attr(
-            has_doc_cfg,
+            doc_cfg,
             $(doc(cfg(any(
                 $(target_pointer_width = $pointer_width),+
             ))))?
@@ -984,7 +984,7 @@ macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
         )]
         #[allow(unused_attributes)]
         #[cfg_attr(
-            has_doc_cfg,
+            doc_cfg,
             $(doc(cfg(any(
                 $(target_pointer_width = $pointer_width),+
             ))))?
