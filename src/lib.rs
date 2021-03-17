@@ -49,10 +49,11 @@
     all(rustc_channel_nightly, impl_iterator, impl_trusted_len),
     feature(trusted_len)
 )]
+#![cfg_attr(all(rustc_channel_nightly, alloc), feature(alloc))]
 #![cfg_attr(all(rustc_channel_nightly, doc_cfg), feature(doc_cfg))]
 #![no_std]
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 extern crate alloc;
 #[cfg(test)]
 #[macro_use]
@@ -60,9 +61,9 @@ extern crate claim;
 #[cfg(feature = "doc_item")]
 extern crate doc_item;
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 use alloc::string::String;
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 use alloc::vec::Vec;
 #[cfg(impl_iterator)]
 use core::iter::ExactSizeIterator;
@@ -175,7 +176,7 @@ impl IndexMut<RangeFromExclusive<usize>> for str {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl Index<RangeFromExclusive<usize>> for String {
     type Output = str;
@@ -186,7 +187,7 @@ impl Index<RangeFromExclusive<usize>> for String {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl IndexMut<RangeFromExclusive<usize>> for String {
     #[inline]
@@ -195,7 +196,7 @@ impl IndexMut<RangeFromExclusive<usize>> for String {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> Index<RangeFromExclusive<usize>> for Vec<T> {
     type Output = [T];
@@ -206,7 +207,7 @@ impl<T> Index<RangeFromExclusive<usize>> for Vec<T> {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> IndexMut<RangeFromExclusive<usize>> for Vec<T> {
     #[inline]
@@ -354,7 +355,7 @@ impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for [T] {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> Index<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
     type Output = [T];
@@ -365,7 +366,7 @@ impl<T> Index<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
     #[inline]
@@ -406,7 +407,7 @@ impl IndexMut<RangeFromExclusiveToInclusive<usize>> for str {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl Index<RangeFromExclusiveToInclusive<usize>> for String {
     type Output = str;
@@ -417,7 +418,7 @@ impl Index<RangeFromExclusiveToInclusive<usize>> for String {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl IndexMut<RangeFromExclusiveToInclusive<usize>> for String {
     #[inline]
@@ -716,7 +717,7 @@ impl<T> IndexMut<RangeFromExclusiveToExclusive<usize>> for [T] {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> Index<RangeFromExclusiveToExclusive<usize>> for Vec<T> {
     type Output = [T];
@@ -727,7 +728,7 @@ impl<T> Index<RangeFromExclusiveToExclusive<usize>> for Vec<T> {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl<T> IndexMut<RangeFromExclusiveToExclusive<usize>> for Vec<T> {
     #[inline]
@@ -762,7 +763,7 @@ impl IndexMut<RangeFromExclusiveToExclusive<usize>> for str {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl Index<RangeFromExclusiveToExclusive<usize>> for String {
     type Output = str;
@@ -773,7 +774,7 @@ impl Index<RangeFromExclusiveToExclusive<usize>> for String {
     }
 }
 
-#[cfg(impl_index)]
+#[cfg(all(impl_index, alloc))]
 #[cfg_attr(feature = "doc_item", since("1.41.0"))]
 impl IndexMut<RangeFromExclusiveToExclusive<usize>> for String {
     #[inline]
@@ -1042,9 +1043,9 @@ range_from_exclusive_to_exclusive_exact_iter_impl!(char, "32", "64");
 
 #[cfg(test)]
 mod tests {
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     use alloc::borrow::ToOwned;
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     use alloc::vec;
     #[cfg(impl_range_bounds)]
     use core::ops::Bound::Excluded;
@@ -1167,21 +1168,21 @@ mod tests {
             });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_index_string() {
         assert_eq!(&"abcde".to_owned()[RangeFromExclusive { start: 1 }], "cde");
         assert_eq!(&"abcde".to_owned()[RangeFromExclusive { start: 4 }], "");
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_string_out_of_bounds() {
         let _ = "abcde".to_owned()[RangeFromExclusive { start: 5 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_string_max() {
@@ -1190,7 +1191,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_index_mut_string() {
         let mut s = "abcde".to_owned();
@@ -1201,7 +1202,7 @@ mod tests {
         assert_eq!(s.index_mut(RangeFromExclusive { start: 4 }), "");
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_string_out_of_bounds() {
@@ -1210,7 +1211,7 @@ mod tests {
             .index_mut(RangeFromExclusive { start: 5 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_string_from_max() {
@@ -1219,7 +1220,7 @@ mod tests {
         });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_index_vec() {
         assert_eq!(
@@ -1229,14 +1230,14 @@ mod tests {
         assert_eq!(vec![0, 1, 2, 3, 4][RangeFromExclusive { start: 4 }], []);
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_vec_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4][RangeFromExclusive { start: 5 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_vec_from_max() {
@@ -1245,7 +1246,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_index_mut_vec() {
         let mut v = vec![0, 1, 2, 3, 4];
@@ -1256,14 +1257,14 @@ mod tests {
         assert_eq!(v.index_mut(RangeFromExclusive { start: 4 }), []);
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_vec_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusive { start: 5 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_index_mut_vec_from_max() {
@@ -1541,7 +1542,7 @@ mod tests {
             });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_inclusive_index_string() {
         assert_eq!(
@@ -1558,21 +1559,21 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_string_partially_out_of_bounds() {
         let _ = "abcde".to_owned()[RangeFromExclusiveToInclusive { start: 3, end: 5 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_string_fully_out_of_bounds() {
         let _ = "abcde".to_owned()[RangeFromExclusiveToInclusive { start: 5, end: 7 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_string_from_max() {
@@ -1582,7 +1583,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_string_to_max() {
@@ -1592,7 +1593,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_inclusive_index_mut_string() {
         let mut s = "abcde".to_owned();
@@ -1610,7 +1611,7 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_string_partially_out_of_bounds() {
@@ -1619,7 +1620,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_string_fully_out_of_bounds() {
@@ -1628,7 +1629,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_string_from_max() {
@@ -1638,7 +1639,7 @@ mod tests {
         });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_string_to_max() {
@@ -1648,7 +1649,7 @@ mod tests {
         });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_inclusive_index_vec() {
         assert_eq!(
@@ -1665,21 +1666,21 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_vec_partially_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 3, end: 5 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_vec_fully_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToInclusive { start: 5, end: 7 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_vec_from_max() {
@@ -1689,7 +1690,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_vec_to_max() {
@@ -1699,7 +1700,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_inclusive_index_mut_vec() {
         let mut v = vec![0, 1, 2, 3, 4];
@@ -1717,21 +1718,21 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_vec_partially_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive { start: 3, end: 5 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_vec_fully_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToInclusive { start: 5, end: 7 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_vec_from_max() {
@@ -1741,7 +1742,7 @@ mod tests {
         });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_inclusive_index_mut_vec_to_max() {
@@ -2168,7 +2169,7 @@ mod tests {
             });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_exclusive_index_string() {
         assert_eq!(
@@ -2185,21 +2186,21 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_string_partially_out_of_bounds() {
         let _ = "abcde".to_owned()[RangeFromExclusiveToExclusive { start: 3, end: 6 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_string_fully_out_of_bounds() {
         let _ = "abcde".to_owned()[RangeFromExclusiveToExclusive { start: 5, end: 7 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_string_from_max() {
@@ -2209,7 +2210,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_exclusive_index_mut_string() {
         let mut s = "abcde".to_owned();
@@ -2227,7 +2228,7 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_string_partially_out_of_bounds() {
@@ -2236,7 +2237,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_string_fully_out_of_bounds() {
@@ -2245,7 +2246,7 @@ mod tests {
             .index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_string_from_max() {
@@ -2255,7 +2256,7 @@ mod tests {
         });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_exclusive_index_vec() {
         assert_eq!(
@@ -2272,21 +2273,21 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_vec_partially_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 3, end: 6 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_vec_fully_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4][RangeFromExclusiveToExclusive { start: 5, end: 7 }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_vec_from_max() {
@@ -2296,7 +2297,7 @@ mod tests {
         }];
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     fn range_from_exclusive_to_exclusive_index_mut_vec() {
         let mut v = vec![0, 1, 2, 3, 4];
@@ -2314,21 +2315,21 @@ mod tests {
         );
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_vec_partially_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive { start: 3, end: 6 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_vec_fully_out_of_bounds() {
         let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusiveToExclusive { start: 5, end: 7 });
     }
 
-    #[cfg(impl_index)]
+    #[cfg(all(impl_index, alloc))]
     #[test]
     #[should_panic]
     fn range_from_exclusive_to_exclusive_index_mut_vec_from_max() {

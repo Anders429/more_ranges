@@ -43,6 +43,10 @@ fn main() {
     if ac.probe_trait("core::iter::TrustedLen") {
         autocfg::emit("impl_trusted_len");
     }
+    ac.set_feature("alloc");
+    if ac.probe_sysroot_crate("alloc") {
+        autocfg::emit("alloc");
+    }
     ac.set_feature("doc_cfg");
     if ac.probe_expression(
         "{
