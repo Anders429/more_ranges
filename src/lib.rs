@@ -237,7 +237,21 @@ impl Index<RangeFromExclusive<usize>> for CStr {
         if index.start == core::usize::MAX {
             panic!("attempted to index slice exclusively from maximum usize");
         }
-        &self[(index.start + 1)..]
+        let bytes = self.to_bytes_with_nul();
+        // We need to manually check the starting index to account for the null byte, since
+        // otherwise we could get an empty string that doesn't end in a null.
+        if index.start + 1 < bytes.len() {
+            unsafe {
+                // SAFETY: We guaranteed above that these bytes will end with a null.
+                CStr::from_bytes_with_nul_unchecked(&bytes[(index.start + 1)..])
+            }
+        } else {
+            panic!(
+                "index out of bounds: the len is {} but the index is {}",
+                bytes.len(),
+                index.start
+            );
+        }
     }
 }
 
