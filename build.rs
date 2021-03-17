@@ -5,7 +5,18 @@ use autocfg::Channel;
 fn main() {
     let mut ac = autocfg::new();
 
-    if ac.probe_rustc_version(1, 41) {
+    ac.set_feature("re_rebalance_coherence");
+    if ac.probe_expression(
+        "{
+            struct Foo;
+            impl core::ops::Index<Foo> for str {
+                type Output = str;
+                fn index(&self, _: Foo) -> &str {
+                    self
+                }
+            }
+        }",
+    ) {
         autocfg::emit("impl_index");
     }
     ac.set_feature("collections_range");
