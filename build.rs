@@ -47,6 +47,9 @@ fn main() {
     if ac.probe_sysroot_crate("alloc") {
         autocfg::emit("alloc");
     }
+    if ac.probe_sysroot_crate("std") {
+        autocfg::emit("std");
+    }
     ac.set_feature("doc_cfg");
     if ac.probe_expression(
         "{

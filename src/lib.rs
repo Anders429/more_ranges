@@ -60,6 +60,8 @@ extern crate alloc;
 extern crate claim;
 #[cfg(feature = "doc_item")]
 extern crate doc_item;
+#[cfg(all(impl_index, std))]
+extern crate std;
 
 #[cfg(all(impl_index, alloc))]
 use alloc::string::String;
@@ -93,6 +95,8 @@ use core::ops::RangeBounds;
 use doc_item::docbox;
 #[cfg(feature = "doc_item")]
 use doc_item::since;
+#[cfg(all(impl_index, std))]
+use std::ffi::CStr;
 
 /// A range only bounded exclusively below.
 ///
@@ -213,6 +217,27 @@ impl<T> IndexMut<RangeFromExclusive<usize>> for Vec<T> {
     #[inline]
     fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut [T] {
         IndexMut::index_mut(&mut **self, index)
+    }
+}
+
+#[cfg(all(impl_index, std))]
+#[cfg_attr(feature = "doc_item", since("1.41.0"))]
+#[cfg_attr(
+    feature = "doc_item",
+    docbox(
+        content = "Only available on targets supporting <b><code>std</code></b>.",
+        class = "std"
+    )
+)]
+impl Index<RangeFromExclusive<usize>> for CStr {
+    type Output = CStr;
+
+    #[inline]
+    fn index(&self, index: RangeFromExclusive<usize>) -> &CStr {
+        if index.start == core::usize::MAX {
+            panic!("attempted to index slice exclusively from maximum usize");
+        }
+        &self[(index.start + 1)..]
     }
 }
 
@@ -1057,6 +1082,8 @@ mod tests {
     use core::ops::IndexMut;
     #[cfg(impl_range_bounds)]
     use core::ops::RangeBounds;
+    #[cfg(all(impl_index, std))]
+    use std::ffi::CStr;
     use RangeFromExclusive;
     use RangeFromExclusiveToExclusive;
     use RangeFromExclusiveToInclusive;
@@ -1271,6 +1298,35 @@ mod tests {
         let _ = vec![0, 1, 2, 3, 4].index_mut(RangeFromExclusive {
             start: core::usize::MAX,
         });
+    }
+
+    #[cfg(all(impl_index, std))]
+    #[test]
+    fn range_from_exclusive_index_cstr() {
+        assert_eq!(
+            &CStr::from_bytes_with_nul(b"abcde\0").unwrap()[RangeFromExclusive { start: 1 }],
+            CStr::from_bytes_with_nul(b"cde\0").unwrap()
+        );
+        assert_eq!(
+            &CStr::from_bytes_with_nul(b"abcde\0").unwrap()[RangeFromExclusive { start: 4 }],
+            CStr::from_bytes_with_nul(b"\0").unwrap()
+        );
+    }
+
+    #[cfg(all(impl_index, std))]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_cstr_out_of_bounds() {
+        let _ = CStr::from_bytes_with_nul(b"abcde\0").unwrap()[RangeFromExclusive { start: 5 }];
+    }
+
+    #[cfg(all(impl_index, std))]
+    #[test]
+    #[should_panic]
+    fn range_from_exclusive_index_cstr_from_max() {
+        let _ = CStr::from_bytes_with_nul(b"abcde\0").unwrap()[RangeFromExclusive {
+            start: core::usize::MAX,
+        }];
     }
 
     #[cfg(impl_range_bounds)]
