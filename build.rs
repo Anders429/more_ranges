@@ -48,7 +48,8 @@ fn main() {
         "{
             #[doc(cfg(foo))]
             struct Foo;
-        }") {
+        }",
+    ) {
         autocfg::emit("doc_cfg");
     }
     ac.emit_rustc_channel(Channel::Nightly);
