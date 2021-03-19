@@ -16,10 +16,10 @@ are:
 - [`RangeFromExclusiveToExclusive`](https://docs.rs/more_ranges/*/more_ranges/struct.RangeFromExclusiveToExclusive.html)
 - [`RangeFromExclusiveToInclusive`](https://docs.rs/more_ranges/*/more_ranges/struct.RangeFromExclusiveToInclusive.html)
 
-These ranges operate nearly the same as those in
-[`std::ops`](https://doc.rust-lang.org/std/ops/index.html). However, they cannot be used in
-indexing, and [`Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html) functionality is
-only available on `nightly`.
+These ranges operate nearly the identical to those in
+[`std::ops`](https://doc.rust-lang.org/std/ops/index.html). However, some functionality is only
+available on the `nightly` channel. See the [documentation](https://docs.rs/more_ranges/) for
+details.
 
 ## Example
 The range types provided here can be used by directly specifying their fields:

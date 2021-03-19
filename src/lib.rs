@@ -2,8 +2,10 @@
 //!
 //! Specifically, these are ranges which are bounded exclusively below.
 //!
-//! These ranges currently cannot be used in indexing, and [`Iterator`] functionality is only
-//! available on `nightly`.
+//! These ranges operate nearly the identical to those in
+//! [`std::ops`](https://doc.rust-lang.org/std/ops/index.html). However, some functionality is only
+//! available on the `nightly` channel. See individual items for details on what functionality
+//! requires `nightly`.
 //!
 //! # Example
 //! While each range type in the standard library is either bounded inclusively below or unbounded
