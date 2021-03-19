@@ -1879,6 +1879,16 @@ mod tests {
 
     #[cfg(impl_iterator)]
     #[test]
+    fn range_from_exclusive_to_inclusive_iterator_nth_too_large() {
+        let mut range = RangeFromExclusiveToInclusive { start: 1, end: 6 };
+
+        assert_none!(range.nth(10));
+        // Make sure the start and end are set correctly.
+        assert_eq!((range.start, range.end), (6, 6));
+    }
+
+    #[cfg(impl_iterator)]
+    #[test]
     fn range_from_exclusive_to_inclusive_iterator_last() {
         assert_some_eq!(RangeFromExclusiveToInclusive { start: 1, end: 3 }.last(), 3);
     }
