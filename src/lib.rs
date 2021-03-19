@@ -2488,6 +2488,15 @@ mod tests {
 
     #[cfg(impl_iterator)]
     #[test]
+    fn range_from_exclusive_to_exclusive_iterator_size_hint_overflow() {
+        assert_eq!(
+            RangeFromExclusiveToExclusive { start: 0, end: core::u128::MAX }.size_hint(),
+            (core::usize::MAX, None)
+        );
+    }
+
+    #[cfg(impl_iterator)]
+    #[test]
     fn range_from_exclusive_to_exclusive_iterator_nth() {
         let mut range = RangeFromExclusiveToExclusive { start: 1, end: 6 };
 
