@@ -1033,12 +1033,7 @@ macro_rules! range_from_exclusive_to_exclusive_exact_iter_impl {
             #[inline]
             fn len(&self) -> usize {
                 if self.start < self.end {
-                    let difference = Step::steps_between(&self.start, &self.end).unwrap();
-                    if difference > 0 {
-                        difference - 1
-                    } else {
-                        0
-                    }
+                    Step::steps_between(&self.start, &self.end).unwrap() - 1
                 } else {
                     0
                 }
