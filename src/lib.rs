@@ -2554,6 +2554,16 @@ mod tests {
     }
 
     #[cfg(impl_iterator)]
+    #[test]
+    fn range_from_exclusive_to_exclusive_double_ended_iterator_nth_back_too_large() {
+        let mut range = RangeFromExclusiveToExclusive { start: 1, end: 6 };
+
+        assert_none!(range.nth_back(10));
+        // Make sure the start and end are set correctly.
+        assert_eq!((range.start, range.end), (1, 2));
+    }
+
+    #[cfg(impl_iterator)]
     macro_rules! test_range_from_exclusive_to_exclusive_exact_iter_unsigned {
         ($name:ident, $t:ty $(, $($pointer_width:literal),+)?) => {
             #[cfg(all(
