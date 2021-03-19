@@ -1857,6 +1857,14 @@ mod tests {
             RangeFromExclusiveToInclusive { start: 1, end: 3 }.size_hint(),
             (2, Some(2))
         );
+        assert_eq!(
+            RangeFromExclusiveToInclusive { start: 1, end: 1 }.size_hint(),
+            (0, Some(0))
+        );
+        assert_eq!(
+            RangeFromExclusiveToInclusive { start: 3, end: 1 }.size_hint(),
+            (0, Some(0))
+        );
     }
 
     #[cfg(impl_iterator)]
