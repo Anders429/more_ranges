@@ -698,7 +698,7 @@ range_from_exclusive_to_inclusive_exact_iter_impl!(char, "32", "64");
 
 /// A range bounded exclusively below and above.
 ///
-/// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and x < end`. It is
+/// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and `x < end`. It is
 /// empty unless `start < end + 1`.
 ///
 /// # Example
