@@ -36,23 +36,23 @@
 //! [`RangeFrom`]: core::ops::RangeFrom
 #![allow(stable_features)]
 #![cfg_attr(
-    all(rustc_channel_nightly, impl_index),
+    feature_re_rebalance_coherence,
     feature(re_rebalance_coherence)
 )]
 #![cfg_attr(
-    all(rustc_channel_nightly, impl_range_bounds),
+    feature_collections_range,
     feature(collections_range)
 )]
 #![cfg_attr(
-    all(rustc_channel_nightly, impl_iterator),
+    feature_step,
     feature(step_trait, step_trait_ext, unchecked_math)
 )]
 #![cfg_attr(
-    all(rustc_channel_nightly, impl_iterator, impl_trusted_len),
+    feature_trusted_len,
     feature(trusted_len)
 )]
-#![cfg_attr(all(rustc_channel_nightly, alloc), feature(alloc))]
-#![cfg_attr(all(rustc_channel_nightly, doc_cfg), feature(doc_cfg))]
+#![cfg_attr(feature_alloc, feature(alloc))]
+#![cfg_attr(feature_doc_cfg, feature(doc_cfg))]
 #![no_std]
 
 #[cfg(all(impl_index, alloc))]
@@ -2487,7 +2487,11 @@ mod tests {
     #[test]
     fn range_from_exclusive_to_exclusive_iterator_size_hint_overflow() {
         assert_eq!(
-            RangeFromExclusiveToExclusive { start: 0, end: core::u128::MAX }.size_hint(),
+            RangeFromExclusiveToExclusive {
+                start: 0,
+                end: core::u128::MAX
+            }
+            .size_hint(),
             (core::usize::MAX, None)
         );
     }
