@@ -35,22 +35,10 @@
 //! [`Iterator`]: core::iter::Iterator
 //! [`RangeFrom`]: core::ops::RangeFrom
 #![allow(stable_features)]
-#![cfg_attr(
-    feature_re_rebalance_coherence,
-    feature(re_rebalance_coherence)
-)]
-#![cfg_attr(
-    feature_collections_range,
-    feature(collections_range)
-)]
-#![cfg_attr(
-    feature_step,
-    feature(step_trait, step_trait_ext, unchecked_math)
-)]
-#![cfg_attr(
-    feature_trusted_len,
-    feature(trusted_len)
-)]
+#![cfg_attr(feature_re_rebalance_coherence, feature(re_rebalance_coherence))]
+#![cfg_attr(feature_collections_range, feature(collections_range))]
+#![cfg_attr(feature_step, feature(step_trait, step_trait_ext, unchecked_math))]
+#![cfg_attr(feature_trusted_len, feature(trusted_len))]
 #![cfg_attr(feature_alloc, feature(alloc))]
 #![cfg_attr(feature_doc_cfg, feature(doc_cfg))]
 #![no_std]
