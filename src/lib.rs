@@ -53,11 +53,11 @@ extern crate doc_item;
 extern crate std;
 
 #[cfg(impl_index)]
-include!("impl_index.rs");
+mod impl_index;
 #[cfg(impl_iterator)]
-include!("impl_iterator.rs");
+mod impl_iterator;
 #[cfg(impl_range_bounds)]
-include!("impl_range_bounds.rs");
+mod impl_range_bounds;
 
 /// A range only bounded exclusively below.
 ///
