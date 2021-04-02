@@ -1,7 +1,7 @@
 extern crate autocfg;
 
 macro_rules! feature_probe {
-    ($($feature:literal),+, $ac:ident, $probe:expr, $probe_cfg:literal, $feature_cfg:literal) => {
+    ($probe_cfg:expr, $feature_cfg:expr, $ac:ident, $probe:expr, $($feature:expr),+,) => {
         let mut requires_feature = false;
         $($ac.set_feature($feature);)+
         if $probe {
@@ -25,7 +25,8 @@ fn main() {
     let mut ac = autocfg::new();
 
     feature_probe! {
-        "re_rebalance_coherence",
+        "impl_index",
+        "feature_re_rebalance_coherence",
         ac,
         ac.probe_expression("{
             struct Foo;
@@ -36,24 +37,22 @@ fn main() {
                 }
             }
         }"),
-        "impl_index",
-        "feature_re_rebalance_coherence"
+        "re_rebalance_coherence",
     }
 
     feature_probe! {
-        "collections_range",
+        "impl_range_bounds",
+        "feature_collections_range",
         ac,
         ac.probe_trait("core::ops::RangeBounds<usize>")
         && ac.probe_expression("core::ops::RangeBounds::start_bound(&(0..))")
         && ac.probe_expression("core::ops::RangeBounds::end_bound(&(0..))"),
-        "impl_range_bounds",
-        "feature_collections_range"
+        "collections_range",
     }
 
     feature_probe! {
-        "step_trait",
-        "step_trait_ext",
-        "unchecked_math",
+        "impl_iterator",
+        "feature_step",
         ac,
         ac.probe_trait("core::iter::Step")
         && ac.probe_expression("core::iter::Step::forward(1, 1)")
@@ -62,28 +61,30 @@ fn main() {
         && ac.probe_expression("core::iter::Step::backward_checked(1, 1)")
         && ac.probe_expression("unsafe { core::iter::Step::backward_unchecked(1, 1) }")
         && ac.probe_expression("core::iter::Step::steps_between(&1, &2)"),
-        "impl_iterator",
-        "feature_step"
+        "step_trait",
+        "step_trait_ext",
+        "unchecked_math",
     }
 
     feature_probe! {
-        "trusted_len",
+        "impl_trusted_len",
+        "feature_trusted_len",
         ac,
         ac.probe_trait("core::iter::TrustedLen"),
-        "impl_trusted_len",
-        "feature_trusted_len"
+        "trusted_len",
     }
 
     feature_probe! {
         "alloc",
+        "feature_alloc",
         ac,
         ac.probe_sysroot_crate("alloc"),
         "alloc",
-        "feature_alloc"
     }
 
     feature_probe! {
         "doc_cfg",
+        "feature_doc_cfg",
         ac,
         ac.probe_expression(
             "{
@@ -92,7 +93,6 @@ fn main() {
             }",
         ),
         "doc_cfg",
-        "feature_doc_cfg"
     }
 
     if ac.probe_sysroot_crate("std") {
