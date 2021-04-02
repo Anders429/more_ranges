@@ -14,9 +14,8 @@
 //!
 //! ```
 //! # #[cfg(impl_range_bounds)]
+//! fn test() {
 //! use std::ops::{Bound, RangeBounds, RangeFrom};
-//! # #[cfg(not(impl_range_bounds))]
-//! # use std::ops::RangeFrom;
 //! use more_ranges::RangeFromExclusive;
 //!
 //! let range_inclusive = RangeFrom {
@@ -26,8 +25,6 @@
 //!     start: 1,
 //! };
 //!
-//! # #[cfg(impl_range_bounds)]
-//! # fn assertions() {
 //! // The inclusive range is inclusively bound.
 //! assert_eq!(range_inclusive.start_bound(), Bound::Included(&1));
 //!
@@ -35,8 +32,8 @@
 //! assert_eq!(range_exclusive.start_bound(), Bound::Excluded(&1));
 //! # }
 //! # #[cfg(not(impl_range_bounds))]
-//! # fn assertions() {}
-//! # assertions();
+//! # fn test() {}
+//! # test();
 //! ```
 //!
 //! [`Iterator`]: core::iter::Iterator
