@@ -13,8 +13,10 @@
 //! example, [`RangeFrom`] with [`RangeFromExclusive`].
 //!
 //! ```
-//! # #[cfg(impl_range_bounds)] {
+//! # #[cfg(impl_range_bounds)]
 //! use std::ops::{Bound, RangeBounds, RangeFrom};
+//! # #[cfg(not(impl_range_bounds))]
+//! # use std::ops::RangeFrom;
 //! use more_ranges::RangeFromExclusive;
 //!
 //! let range_inclusive = RangeFrom {
@@ -24,12 +26,17 @@
 //!     start: 1,
 //! };
 //!
+//! # #[cfg(impl_range_bounds)]
+//! # fn assertions() {
 //! // The inclusive range is inclusively bound.
 //! assert_eq!(range_inclusive.start_bound(), Bound::Included(&1));
 //!
 //! // Contrastingly, the exclusive range is exclusively bound.
 //! assert_eq!(range_exclusive.start_bound(), Bound::Excluded(&1));
 //! # }
+//! # #[cfg(not(impl_range_bounds))]
+//! # fn assertions() {}
+//! # assertions();
 //! ```
 //!
 //! [`Iterator`]: core::iter::Iterator

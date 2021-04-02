@@ -15,7 +15,7 @@ use RangeFromExclusiveToExclusive;
 use RangeFromExclusiveToInclusive;
 
 
-#[cfg_attr(feature = "doc_item", doc_item::since(content="1.41.0"))]
+#[cfg_attr(feature = "doc_item", since(content="1.41.0"))]
 impl<T> Index<RangeFromExclusive<usize>> for [T] {
     type Output = [T];
 
