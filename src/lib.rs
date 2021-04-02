@@ -56,21 +56,8 @@ extern crate std;
 include!("impl_index.rs");
 #[cfg(impl_iterator)]
 include!("impl_iterator.rs");
-
 #[cfg(impl_range_bounds)]
-use core::ops::Bound;
-#[cfg(impl_range_bounds)]
-use core::ops::Bound::Excluded;
-#[cfg(impl_range_bounds)]
-use core::ops::Bound::Included;
-#[cfg(impl_range_bounds)]
-use core::ops::Bound::Unbounded;
-#[cfg(impl_range_bounds)]
-use core::ops::RangeBounds;
-#[cfg(feature = "doc_item")]
-use doc_item::docbox;
-#[cfg(feature = "doc_item")]
-use doc_item::since;
+include!("impl_range_bounds.rs");
 
 /// A range only bounded exclusively below.
 ///
@@ -100,32 +87,6 @@ pub struct RangeFromExclusive<Idx> {
     pub start: Idx,
 }
 
-#[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", since("1.28.0"))]
-impl<T> RangeBounds<T> for RangeFromExclusive<T> {
-    #[inline]
-    fn start_bound(&self) -> Bound<&T> {
-        Excluded(&self.start)
-    }
-    #[inline]
-    fn end_bound(&self) -> Bound<&T> {
-        Unbounded
-    }
-}
-
-#[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", since("1.28.0"))]
-impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
-    #[inline]
-    fn start_bound(&self) -> Bound<&T> {
-        Excluded(self.start)
-    }
-    #[inline]
-    fn end_bound(&self) -> Bound<&T> {
-        Unbounded
-    }
-}
-
 /// A range bounded exclusively below and inclusively above.
 ///
 /// The `RangeFromExclusiveToInclusive` contains all values with `x > start` and `x <= end`. It is
@@ -150,36 +111,6 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
     pub end: Idx,
 }
 
-#[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", since("1.28.0"))]
-impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
-    #[inline]
-    #[must_use]
-    fn start_bound(&self) -> Bound<&T> {
-        Excluded(&self.start)
-    }
-    #[inline]
-    #[must_use]
-    fn end_bound(&self) -> Bound<&T> {
-        Included(&self.end)
-    }
-}
-
-#[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", since("1.28.0"))]
-impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
-    #[inline]
-    #[must_use]
-    fn start_bound(&self) -> Bound<&T> {
-        Excluded(self.start)
-    }
-    #[inline]
-    #[must_use]
-    fn end_bound(&self) -> Bound<&T> {
-        Included(self.end)
-    }
-}
-
 /// A range bounded exclusively below and above.
 ///
 /// The `RangeFromExclusiveToExclusive` contains all values with `x > start` and `x < end`. It is
@@ -202,103 +133,4 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
     pub start: Idx,
     /// The upper bound of the range (exclusive).
     pub end: Idx,
-}
-
-#[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", since("1.28.0"))]
-impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
-    #[inline]
-    #[must_use]
-    fn start_bound(&self) -> Bound<&T> {
-        Excluded(&self.start)
-    }
-    #[inline]
-    #[must_use]
-    fn end_bound(&self) -> Bound<&T> {
-        Excluded(&self.end)
-    }
-}
-
-#[cfg(impl_range_bounds)]
-#[cfg_attr(feature = "doc_item", since("1.28.0"))]
-impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
-    #[inline]
-    #[must_use]
-    fn start_bound(&self) -> Bound<&T> {
-        Excluded(self.start)
-    }
-    #[inline]
-    #[must_use]
-    fn end_bound(&self) -> Bound<&T> {
-        Excluded(self.end)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    #[cfg(impl_range_bounds)]
-    use core::ops::Bound::Excluded;
-    #[cfg(impl_range_bounds)]
-    use core::ops::Bound::Included;
-    #[cfg(impl_range_bounds)]
-    use core::ops::Bound::Unbounded;
-    #[cfg(impl_range_bounds)]
-    use core::ops::RangeBounds;
-    use RangeFromExclusive;
-    use RangeFromExclusiveToExclusive;
-    use RangeFromExclusiveToInclusive;
-
-    #[cfg(impl_range_bounds)]
-    #[test]
-    fn range_from_exclusive_range_bounds() {
-        let range = RangeFromExclusive { start: 1 };
-
-        assert_matches!(range.start_bound(), Excluded(1));
-        assert_matches!(range.end_bound(), Unbounded);
-    }
-
-    #[cfg(impl_range_bounds)]
-    #[test]
-    fn range_from_exclusive_range_bounds_borrowed() {
-        let range = RangeFromExclusive { start: &1 };
-
-        assert_matches!(RangeBounds::<usize>::start_bound(&range), Excluded(1));
-        assert_matches!(RangeBounds::<usize>::end_bound(&range), Unbounded);
-    }
-
-    #[cfg(impl_range_bounds)]
-    #[test]
-    fn range_from_exclusive_to_inclusive_range_bounds() {
-        let range = RangeFromExclusiveToInclusive { start: 1, end: 3 };
-
-        assert_matches!(range.start_bound(), Excluded(1));
-        assert_matches!(range.end_bound(), Included(3));
-    }
-
-    #[cfg(impl_range_bounds)]
-    #[test]
-    fn range_from_exclusive_to_inclusive_range_bounds_borrowed() {
-        let range = RangeFromExclusiveToInclusive { start: &1, end: &3 };
-
-        assert_matches!(RangeBounds::<usize>::start_bound(&range), Excluded(1));
-        assert_matches!(RangeBounds::<usize>::end_bound(&range), Included(3));
-    }
-
-    #[cfg(impl_range_bounds)]
-    #[test]
-    fn range_from_exclusive_to_exclusive_range_bounds() {
-        let range = RangeFromExclusiveToExclusive { start: 1, end: 3 };
-
-        assert_matches!(range.start_bound(), Excluded(1));
-        assert_matches!(range.end_bound(), Excluded(3));
-    }
-
-    #[cfg(impl_range_bounds)]
-    #[test]
-    fn range_from_exclusive_to_exclusive_range_bounds_borrowed() {
-        let range = RangeFromExclusiveToExclusive { start: &1, end: &3 };
-
-        assert_matches!(RangeBounds::<usize>::start_bound(&range), Excluded(1));
-        assert_matches!(RangeBounds::<usize>::end_bound(&range), Excluded(3));
-    }
 }
