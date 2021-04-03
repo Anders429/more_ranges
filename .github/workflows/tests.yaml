@@ -76,8 +76,6 @@ jobs:
     strategy:
       matrix:
         rust:
-          - stable
-          - beta
           - nightly
     steps:
     - uses: actions/checkout@v2
@@ -89,7 +87,7 @@ jobs:
     - uses: actions-rs/cargo@v1
       with:
         command: build
-        args: --target thumbv6m-none-eabi --verbose --features serde
+        args: --target thumbv6m-none-eabi --verbose --features serde -Z features=dev_dep
 
   docs:
     runs-on: ubuntu-latest
