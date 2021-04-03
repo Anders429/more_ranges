@@ -221,7 +221,10 @@ where
                     Some(value) => value,
                     None => return Err(de::Error::invalid_length(1, &self)),
                 };
-                Ok(RangeFromExclusiveToInclusive { start: start, end: end })
+                Ok(RangeFromExclusiveToInclusive {
+                    start: start,
+                    end: end,
+                })
             }
 
             fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
@@ -254,7 +257,10 @@ where
                     Some(value) => value,
                     None => return Err(de::Error::missing_field("end")),
                 };
-                Ok(RangeFromExclusiveToInclusive { start: start, end: end })
+                Ok(RangeFromExclusiveToInclusive {
+                    start: start,
+                    end: end,
+                })
             }
         }
 
@@ -357,7 +363,10 @@ where
                     Some(value) => value,
                     None => return Err(de::Error::invalid_length(1, &self)),
                 };
-                Ok(RangeFromExclusiveToExclusive { start: start, end: end })
+                Ok(RangeFromExclusiveToExclusive {
+                    start: start,
+                    end: end,
+                })
             }
 
             fn visit_map<V>(self, mut map: V) -> Result<Self::Value, V::Error>
@@ -390,7 +399,10 @@ where
                     Some(value) => value,
                     None => return Err(de::Error::missing_field("end")),
                 };
-                Ok(RangeFromExclusiveToExclusive { start: start, end: end })
+                Ok(RangeFromExclusiveToExclusive {
+                    start: start,
+                    end: end,
+                })
             }
         }
 
@@ -432,7 +444,7 @@ mod tests {
     #[test]
     fn range_from_exclusive_to_inclusive_ser_de() {
         assert_tokens(
-            &RangeFromExclusiveToInclusive::<u8> {start: 1, end: 3},
+            &RangeFromExclusiveToInclusive::<u8> { start: 1, end: 3 },
             &[
                 Token::Struct {
                     name: "RangeFromExclusiveToInclusive",
@@ -450,7 +462,7 @@ mod tests {
     #[test]
     fn range_from_exclusive_to_exclusive_ser_de() {
         assert_tokens(
-            &RangeFromExclusiveToExclusive::<u8> {start: 1, end: 3},
+            &RangeFromExclusiveToExclusive::<u8> { start: 1, end: 3 },
             &[
                 Token::Struct {
                     name: "RangeFromExclusiveToExclusive",

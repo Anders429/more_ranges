@@ -38,6 +38,7 @@
 //!
 //! [`Iterator`]: core::iter::Iterator
 //! [`RangeFrom`]: core::ops::RangeFrom
+#![allow(deprecated)]
 #![cfg_attr(feature_re_rebalance_coherence, feature(re_rebalance_coherence))]
 #![cfg_attr(feature_collections_range, feature(collections_range))]
 #![cfg_attr(feature_step, feature(step_trait, step_trait_ext, unchecked_math))]
