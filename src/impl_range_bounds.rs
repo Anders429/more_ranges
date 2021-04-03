@@ -11,7 +11,7 @@ use RangeFromExclusive;
 use RangeFromExclusiveToExclusive;
 use RangeFromExclusiveToInclusive;
 
-#[cfg_attr(feature = "doc_item", since(content="1.28.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
@@ -23,7 +23,7 @@ impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content="1.28.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
     #[inline]
     fn start_bound(&self) -> Bound<&T> {
@@ -35,7 +35,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content="1.28.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     #[inline]
     #[must_use]
@@ -49,7 +49,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content="1.28.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     #[inline]
     #[must_use]
@@ -63,7 +63,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content="1.28.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.28.0"))]
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     #[inline]
     #[must_use]
@@ -77,7 +77,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content="1.28.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.28.0"))]
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
     #[inline]
     #[must_use]

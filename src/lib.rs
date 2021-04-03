@@ -53,6 +53,10 @@ extern crate alloc;
 extern crate claim;
 #[cfg(feature = "doc_item")]
 extern crate doc_item;
+#[cfg(feature = "serde")]
+extern crate serde;
+#[cfg(all(feature = "serde", test))]
+extern crate serde_test;
 #[cfg(all(impl_index, std))]
 extern crate std;
 
@@ -62,6 +66,8 @@ mod impl_index;
 mod impl_iterator;
 #[cfg(impl_range_bounds)]
 mod impl_range_bounds;
+#[cfg(feature = "serde")]
+mod impl_serde;
 
 /// A range only bounded exclusively below.
 ///

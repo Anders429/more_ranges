@@ -29,6 +29,28 @@ jobs:
       with:
         command: test
 
+  test_with_serde:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+          - 1.41.0
+          - 1.28.0
+          - 1.13.0
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        override: true
+    - uses: actions-rs/cargo@v1
+      with:
+        command: test
+        args: --features serde
+
   no_std:
     runs-on: ubuntu-latest
     strategy:
@@ -48,6 +70,26 @@ jobs:
       with:
         command: build
         args: --target thumbv6m-none-eabi --verbose
+
+  no_std_with_serde:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        target: thumbv6m-none-eabi
+        override: true
+    - uses: actions-rs/cargo@v1
+      with:
+        command: build
+        args: --target thumbv6m-none-eabi --verbose --features serde
 
   docs:
     runs-on: ubuntu-latest
