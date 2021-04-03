@@ -644,4 +644,108 @@ mod tests {
             ],
         )
     }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_duplicate_start_field() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToExclusive",
+                    len: 2,
+                },
+                Token::Str("start"),
+                Token::U8(1),
+                Token::Str("start"),
+                Token::U8(2),
+            ],
+            "duplicate field `start`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_duplicate_end_field() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToExclusive",
+                    len: 3,
+                },
+                Token::Str("start"),
+                Token::U8(1),
+                Token::Str("end"),
+                Token::U8(3),
+                Token::Str("end"),
+                Token::U8(2),
+            ],
+            "duplicate field `end`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_missing_start_field() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToExclusive",
+                    len: 1,
+                },
+                Token::Str("end"),
+                Token::U8(3),
+                Token::StructEnd,
+            ],
+            "missing field `start`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_missing_end_field() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToExclusive",
+                    len: 1,
+                },
+                Token::Str("start"),
+                Token::U8(1),
+                Token::StructEnd,
+            ],
+            "missing field `end`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_unexpected_field() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToExclusive",
+                    len: 1,
+                },
+                Token::Str("unexpected"),
+                Token::U8(1),
+            ],
+            "unknown field `unexpected`, expected `start` or `end`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_from_seq() {
+        assert_de_tokens(
+            &RangeFromExclusiveToExclusive::<u8> { start: 1, end: 3 },
+            &[Token::Seq { len: Some(1) }, Token::U8(1), Token::U8(3), Token::SeqEnd],
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_from_seq_too_short() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[Token::Seq { len: None }, Token::SeqEnd],
+            "invalid length 0, expected struct RangeFromExclusiveToExclusive",
+        );
+
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[Token::Seq { len: Some(1) }, Token::U8(1), Token::SeqEnd],
+            "invalid length 1, expected struct RangeFromExclusiveToExclusive",
+        );
+    }
 }
