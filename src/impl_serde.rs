@@ -475,6 +475,21 @@ mod tests {
     }
 
     #[test]
+    fn range_from_exclusive_deserialize_missing_unexpected_field() {
+        assert_de_tokens_error::<RangeFromExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusive",
+                    len: 1,
+                },
+                Token::Str("unexpected"),
+                Token::U8(1),
+            ],
+            "unknown field `unexpected`, expected `start`",
+        );
+    }
+
+    #[test]
     fn range_from_exclusive_deserialize_from_seq() {
         assert_de_tokens(
             &RangeFromExclusive::<u8> { start: 1 },
