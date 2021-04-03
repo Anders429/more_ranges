@@ -444,6 +444,37 @@ mod tests {
     }
 
     #[test]
+    fn range_from_exclusive_deserialize_duplicate_field() {
+        assert_de_tokens_error::<RangeFromExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusive",
+                    len: 2,
+                },
+                Token::Str("start"),
+                Token::U8(1),
+                Token::Str("start"),
+                Token::U8(2),
+            ],
+            "duplicate field `start`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_deserialize_missing_start_field() {
+        assert_de_tokens_error::<RangeFromExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusive",
+                    len: 0,
+                },
+                Token::StructEnd,
+            ],
+            "missing field `start`",
+        );
+    }
+
+    #[test]
     fn range_from_exclusive_deserialize_from_seq() {
         assert_de_tokens(
             &RangeFromExclusive::<u8> { start: 1 },
