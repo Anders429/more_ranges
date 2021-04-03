@@ -420,6 +420,7 @@ where
 #[cfg(test)]
 mod tests {
     use serde_test::assert_de_tokens;
+    use serde_test::assert_de_tokens_error;
     use serde_test::assert_tokens;
     use serde_test::Token;
     use RangeFromExclusive;
@@ -444,10 +445,31 @@ mod tests {
 
     #[test]
     fn range_from_exclusive_deserialize_from_seq() {
-        assert_de_tokens(&RangeFromExclusive::<u8> { start: 1 },
-        &[Token::Seq{len: Some(1)},
-        Token::U8(1),
-        Token::SeqEnd]);
+        assert_de_tokens(
+            &RangeFromExclusive::<u8> { start: 1 },
+            &[Token::Seq { len: Some(1) }, Token::U8(1), Token::SeqEnd],
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_deserialize_from_seq_too_short() {
+        assert_de_tokens_error::<RangeFromExclusive<u8>>(
+            &[Token::Seq { len: None }, Token::SeqEnd],
+            "invalid length 0, expected struct RangeFromExclusive",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_deserialize_from_seq_too_long() {
+        assert_de_tokens_error::<RangeFromExclusive<u8>>(
+            &[
+                Token::Seq { len: Some(2) },
+                Token::U8(1),
+                Token::U8(2),
+                Token::SeqEnd,
+            ],
+            "expected Token::U8(2) but deserialization wants Token::SeqEnd",
+        );
     }
 
     #[test]
