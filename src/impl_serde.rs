@@ -460,19 +460,6 @@ mod tests {
     }
 
     #[test]
-    fn range_from_exclusive_deserialize_from_seq_too_long() {
-        assert_de_tokens_error::<RangeFromExclusive<u8>>(
-            &[
-                Token::Seq { len: Some(2) },
-                Token::U8(1),
-                Token::U8(2),
-                Token::SeqEnd,
-            ],
-            "expected Token::U8(2) but deserialization wants Token::SeqEnd",
-        );
-    }
-
-    #[test]
     fn range_from_exclusive_to_inclusive_ser_de() {
         assert_tokens(
             &RangeFromExclusiveToInclusive::<u8> { start: 1, end: 3 },
