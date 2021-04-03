@@ -6,8 +6,6 @@ use core::iter::TrustedLen;
 use core::mem;
 #[cfg(feature = "doc_item")]
 use doc_item::docbox;
-#[cfg(feature = "doc_item")]
-use doc_item::since;
 use RangeFromExclusive;
 use RangeFromExclusiveToExclusive;
 use RangeFromExclusiveToInclusive;

@@ -4,8 +4,6 @@ use core::ops::Bound::Included;
 use core::ops::Bound::Unbounded;
 use core::ops::RangeBounds;
 #[cfg(feature = "doc_item")]
-use doc_item::docbox;
-#[cfg(feature = "doc_item")]
 use doc_item::since;
 use RangeFromExclusive;
 use RangeFromExclusiveToExclusive;
