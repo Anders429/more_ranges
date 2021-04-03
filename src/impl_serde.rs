@@ -419,6 +419,7 @@ where
 
 #[cfg(test)]
 mod tests {
+    use serde_test::assert_de_tokens;
     use serde_test::assert_tokens;
     use serde_test::Token;
     use RangeFromExclusive;
@@ -439,6 +440,14 @@ mod tests {
                 Token::StructEnd,
             ],
         );
+    }
+
+    #[test]
+    fn range_from_exclusive_deserialize_from_seq() {
+        assert_de_tokens(&RangeFromExclusive::<u8> { start: 1 },
+        &[Token::Seq{len: Some(1)},
+        Token::U8(1),
+        Token::SeqEnd]);
     }
 
     #[test]
