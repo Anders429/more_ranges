@@ -70,6 +70,9 @@ mod impl_range_bounds;
 #[cfg(feature = "serde")]
 mod impl_serde;
 
+#[cfg(feature = "doc_item")]
+use doc_item::since;
+
 /// A range only bounded exclusively below.
 ///
 /// The `RangeFromExclusive` contains all values with `x > start`.
@@ -92,6 +95,7 @@ mod impl_serde;
 ///
 /// [`Iterator`]: core::iter::Iterator
 /// [`Step`]: core::iter::Step
+#[cfg_attr(feature = "doc_item", since(content = "1.0.0"))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusive<Idx> {
     /// The lower bound of the range (exclusive).
@@ -114,6 +118,7 @@ pub struct RangeFromExclusive<Idx> {
 ///     end: 4,
 /// };
 /// ```
+#[cfg_attr(feature = "doc_item", since(content = "1.0.0"))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToInclusive<Idx> {
     /// The lower bound of the range (exclusive).
@@ -138,6 +143,7 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
 ///     end: 4,
 /// };
 /// ```
+#[cfg_attr(feature = "doc_item", since(content = "1.0.0"))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToExclusive<Idx> {
     /// The lower bound of the range (exclusive).
