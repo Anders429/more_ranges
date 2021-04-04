@@ -176,7 +176,7 @@ where
                     type Value = Field;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                        formatter.write_str("`start`")
+                        formatter.write_str("`start` or `end`")
                     }
 
                     fn visit_str<E>(self, value: &str) -> Result<Field, E>
@@ -318,7 +318,7 @@ where
                     type Value = Field;
 
                     fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-                        formatter.write_str("`start`")
+                        formatter.write_str("`start` or `end`")
                     }
 
                     fn visit_str<E>(self, value: &str) -> Result<Field, E>
