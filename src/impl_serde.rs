@@ -490,6 +490,20 @@ mod tests {
     }
 
     #[test]
+    fn range_from_exclusive_deserialize_invalid_field_type() {
+        assert_de_tokens_error::<RangeFromExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusive",
+                    len: 1,
+                },
+                Token::U8(1),
+            ],
+            "invalid type: integer `1`, expected `start`",
+        );
+    }
+
+    #[test]
     fn range_from_exclusive_deserialize_from_seq() {
         assert_de_tokens(
             &RangeFromExclusive::<u8> { start: 1 },
@@ -603,6 +617,20 @@ mod tests {
                 Token::U8(1),
             ],
             "unknown field `unexpected`, expected `start` or `end`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_inclusive_deserialize_invalid_field_type() {
+        assert_de_tokens_error::<RangeFromExclusiveToInclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToInclusive",
+                    len: 1,
+                },
+                Token::U8(1),
+            ],
+            "invalid type: integer `1`, expected `start` or `end`",
         );
     }
 
@@ -725,6 +753,20 @@ mod tests {
                 Token::U8(1),
             ],
             "unknown field `unexpected`, expected `start` or `end`",
+        );
+    }
+
+    #[test]
+    fn range_from_exclusive_to_exclusive_deserialize_invalid_field_type() {
+        assert_de_tokens_error::<RangeFromExclusiveToExclusive<u8>>(
+            &[
+                Token::Struct {
+                    name: "RangeFromExclusiveToExclusive",
+                    len: 1,
+                },
+                Token::U8(1),
+            ],
+            "invalid type: integer `1`, expected `start` or `end`",
         );
     }
 
