@@ -36,6 +36,15 @@ let range_from_exclusive_to_inclusive = RangeFromExclusiveToInclusive { start: 1
 This crate is guaranteed to compile on stable `rustc 1.13.0` and up. Some functionality requires
 later versions. See the [documentation](https://docs.rs/more_ranges/) for individual requirements.
 
+## Optional Features
+The following optional features are available:
+- **`serde`** - Provides [`Serialize`](https://docs.serde.rs/serde/trait.Serialize.html) and
+[`Deserialize`](https://docs.serde.rs/serde/trait.Deserialize.html) trait implementations usable
+with [`serde`](https://crates.io/crates/serde).
+- **`doc_item`** - Enables [`doc_item`](https://crates.io/crates/doc_item) attributes. This is only
+needed when generating documentation. For full functionality, the crate's documentation style sheet
+should be linked by passing `--html-in-header doc/docbox.html` to `rustdoc`.
+
 ## License
 This project is licensed under either of
 
