@@ -49,6 +49,8 @@
 
 #[cfg(all(impl_index, alloc))]
 extern crate alloc;
+#[cfg(all(impl_index, not(alloc), std))]
+extern crate std as alloc;
 #[cfg(test)]
 #[macro_use]
 extern crate claim;
