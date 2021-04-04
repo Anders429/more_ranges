@@ -1,7 +1,5 @@
 use core::fmt;
 use core::marker::PhantomData;
-#[cfg(feature = "doc_item")]
-use doc_item::since;
 use serde::de;
 use serde::de::MapAccess;
 use serde::de::SeqAccess;
@@ -15,7 +13,6 @@ use RangeFromExclusive;
 use RangeFromExclusiveToExclusive;
 use RangeFromExclusiveToInclusive;
 
-#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
 impl<T> Serialize for RangeFromExclusive<T>
 where
@@ -31,7 +28,6 @@ where
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
 impl<'de, T> Deserialize<'de> for RangeFromExclusive<T>
 where
@@ -133,7 +129,6 @@ where
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
 impl<T> Serialize for RangeFromExclusiveToInclusive<T>
 where
@@ -150,7 +145,6 @@ where
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
 impl<'de, T> Deserialize<'de> for RangeFromExclusiveToInclusive<T>
 where
@@ -275,7 +269,6 @@ where
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
 impl<T> Serialize for RangeFromExclusiveToExclusive<T>
 where
@@ -292,7 +285,6 @@ where
     }
 }
 
-#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
 impl<'de, T> Deserialize<'de> for RangeFromExclusiveToExclusive<T>
 where
@@ -638,7 +630,12 @@ mod tests {
     fn range_from_exclusive_to_inclusive_deserialize_from_seq() {
         assert_de_tokens(
             &RangeFromExclusiveToInclusive::<u8> { start: 1, end: 3 },
-            &[Token::Seq { len: Some(1) }, Token::U8(1), Token::U8(3), Token::SeqEnd],
+            &[
+                Token::Seq { len: Some(1) },
+                Token::U8(1),
+                Token::U8(3),
+                Token::SeqEnd,
+            ],
         );
     }
 
@@ -774,7 +771,12 @@ mod tests {
     fn range_from_exclusive_to_exclusive_deserialize_from_seq() {
         assert_de_tokens(
             &RangeFromExclusiveToExclusive::<u8> { start: 1, end: 3 },
-            &[Token::Seq { len: Some(1) }, Token::U8(1), Token::U8(3), Token::SeqEnd],
+            &[
+                Token::Seq { len: Some(1) },
+                Token::U8(1),
+                Token::U8(3),
+                Token::SeqEnd,
+            ],
         );
     }
 

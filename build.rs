@@ -30,9 +30,9 @@ fn main() {
         ac,
         ac.probe_expression("{
             struct Foo;
-            impl core::ops::Index<Foo> for str {
-                type Output = str;
-                fn index(&self, _: Foo) -> &str {
+            impl<T> core::ops::Index<Foo> for [T] {
+                type Output = [T];
+                fn index(&self, _: Foo) -> &[T] {
                     self
                 }
             }

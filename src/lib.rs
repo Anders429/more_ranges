@@ -97,7 +97,7 @@ use doc_item::since;
 ///
 /// [`Iterator`]: core::iter::Iterator
 /// [`Step`]: core::iter::Step
-#[cfg_attr(feature = "doc_item", since(content = "1.0.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusive<Idx> {
     /// The lower bound of the range (exclusive).
@@ -120,7 +120,7 @@ pub struct RangeFromExclusive<Idx> {
 ///     end: 4,
 /// };
 /// ```
-#[cfg_attr(feature = "doc_item", since(content = "1.0.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToInclusive<Idx> {
     /// The lower bound of the range (exclusive).
@@ -145,7 +145,7 @@ pub struct RangeFromExclusiveToInclusive<Idx> {
 ///     end: 4,
 /// };
 /// ```
-#[cfg_attr(feature = "doc_item", since(content = "1.0.0"))]
+#[cfg_attr(feature = "doc_item", since(content = "1.13.0"))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToExclusive<Idx> {
     /// The lower bound of the range (exclusive).
