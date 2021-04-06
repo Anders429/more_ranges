@@ -106,7 +106,7 @@ where
                             if start.is_some() {
                                 return Err(de::Error::duplicate_field("start"));
                             }
-                            start = Some(try!(map.next_value()))
+                            start = Some(try!(map.next_value()));
                         }
                     }
                 }
@@ -233,13 +233,13 @@ where
                             if start.is_some() {
                                 return Err(de::Error::duplicate_field("start"));
                             }
-                            start = Some(try!(map.next_value()))
+                            start = Some(try!(map.next_value()));
                         }
                         Field::End => {
                             if end.is_some() {
                                 return Err(de::Error::duplicate_field("end"));
                             }
-                            end = Some(try!(map.next_value()))
+                            end = Some(try!(map.next_value()));
                         }
                     }
                 }
@@ -373,13 +373,13 @@ where
                             if start.is_some() {
                                 return Err(de::Error::duplicate_field("start"));
                             }
-                            start = Some(try!(map.next_value()))
+                            start = Some(try!(map.next_value()));
                         }
                         Field::End => {
                             if end.is_some() {
                                 return Err(de::Error::duplicate_field("end"));
                             }
-                            end = Some(try!(map.next_value()))
+                            end = Some(try!(map.next_value()));
                         }
                     }
                 }
