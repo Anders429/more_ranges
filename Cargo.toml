@@ -8,7 +8,7 @@ repository = "https://github.com/Anders429/more_ranges"
 license = "MIT OR Apache-2.0"
 keywords = ["range", "exclusive", "excluded", "bound", "rangebound"]
 categories = ["data-structures", "no-std"]
-exclude = [".github/*"]
+exclude = [".github/*", "clippy.toml"]
 
 [package.metadata.docs.rs]
 all-features = true
