@@ -113,7 +113,7 @@ where
                 self.start = unsafe {
                     // SAFETY: Just checked that plus_n < end, which means stepping forward by one
                     // will always succeed.
-                    Step::forward_unchecked(plus_n.clone(), 1)
+                    Step::forward_unchecked(plus_n, 1)
                 };
                 return Some(self.start.clone());
             }
@@ -313,7 +313,7 @@ where
                 self.start = unsafe {
                     // SAFETY: Just checked that plus_n < end, which means stepping forward by one
                     // will always succeed.
-                    Step::forward_unchecked(plus_n.clone(), 1)
+                    Step::forward_unchecked(plus_n, 1)
                 };
                 return Some(self.start.clone());
             }
@@ -379,7 +379,7 @@ where
                 self.end = unsafe {
                     // SAFETY: Just checked that start < minus_n, which means stepping backward by
                     // one will always succeed.
-                    Step::backward_unchecked(minus_n.clone(), 1)
+                    Step::backward_unchecked(minus_n, 1)
                 };
                 return Some(self.end.clone());
             }
