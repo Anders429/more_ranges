@@ -42,10 +42,3 @@ jobs:
         toolchain: ${{ matrix.rust }}
         targets: thumbv6m-none-eabi
     - run: cargo build --target thumbv6m-none-eabi --verbose
-
-  codecov:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions-rs/tarpaulin@v0.1
-    - uses: codecov/codecov-action@v1
