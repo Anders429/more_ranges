@@ -29,12 +29,10 @@ pub struct RangeFromExclusiveToExclusive<Idx> {
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
     #[inline]
-    #[must_use]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
     #[inline]
-    #[must_use]
     fn end_bound(&self) -> Bound<&T> {
         Excluded(&self.end)
     }
@@ -42,12 +40,10 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToExclusive<T> {
 
 impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
     #[inline]
-    #[must_use]
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
     #[inline]
-    #[must_use]
     fn end_bound(&self) -> Bound<&T> {
         Excluded(self.end)
     }
@@ -56,10 +52,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToExclusive<&'a T> {
 #[cfg(test)]
 mod tests {
     use super::RangeFromExclusiveToExclusive;
-    use core::ops::{
-        Bound::Excluded,
-        RangeBounds,
-    };
+    use core::ops::{Bound::Excluded, RangeBounds};
 
     #[test]
     fn range_from_exclusive_to_exclusive_range_bounds() {
