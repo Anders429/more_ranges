@@ -2,9 +2,10 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+
+permissions:
+  contents: read
 
 env:
   CARGO_TERM_COLOR: always
@@ -20,14 +21,11 @@ jobs:
           - nightly
           - 1.28.0
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@master
       with:
         toolchain: ${{ matrix.rust }}
-        override: true
-    - uses: actions-rs/cargo@v1
-      with:
-        command: test
+    - run: cargo test --verbose
 
   no_std:
     runs-on: ubuntu-latest
@@ -38,20 +36,16 @@ jobs:
           - beta
           - nightly
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@master
       with:
         toolchain: ${{ matrix.rust }}
-        target: thumbv6m-none-eabi
-        override: true
-    - uses: actions-rs/cargo@v1
-      with:
-        command: build
-        args: --target thumbv6m-none-eabi --verbose
+        targets: thumbv6m-none-eabi
+    - run: cargo build --target thumbv6m-none-eabi --verbose
 
   codecov:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: actions-rs/tarpaulin@v0.1
     - uses: codecov/codecov-action@v1
