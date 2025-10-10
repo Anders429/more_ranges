@@ -32,10 +32,6 @@
 
 #![no_std]
 
-#[cfg(test)]
-#[macro_use]
-extern crate claims;
-
 mod range_from_exclusive;
 mod range_from_exclusive_to_exclusive;
 mod range_from_exclusive_to_inclusive;
