@@ -58,6 +58,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
 #[cfg(test)]
 mod tests {
     use super::RangeFromExclusive;
+    use claims::assert_matches;
     use core::ops::{
         Bound::{Excluded, Unbounded},
         RangeBounds,
