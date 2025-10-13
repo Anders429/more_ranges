@@ -36,6 +36,10 @@ mod range_from_exclusive;
 mod range_from_exclusive_to_exclusive;
 mod range_from_exclusive_to_inclusive;
 
-pub use range_from_exclusive::RangeFromExclusive;
-pub use range_from_exclusive_to_exclusive::RangeFromExclusiveToExclusive;
-pub use range_from_exclusive_to_inclusive::RangeFromExclusiveToInclusive;
+pub use range_from_exclusive::{IterRangeFromExclusive, RangeFromExclusive};
+pub use range_from_exclusive_to_exclusive::{
+    IterRangeFromExclusiveToExclusive, RangeFromExclusiveToExclusive,
+};
+pub use range_from_exclusive_to_inclusive::{
+    IterRangeFromExclusiveToInclusive, RangeFromExclusiveToInclusive,
+};
