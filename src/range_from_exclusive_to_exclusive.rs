@@ -210,6 +210,21 @@ where
     }
 }
 
+impl<T> DoubleEndedIterator for IterRangeFromExclusiveToExclusive<T>
+where
+    Range<T>: DoubleEndedIterator<Item = T>,
+{
+    #[inline]
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.inner.next_back()
+    }
+
+    #[inline]
+    fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
+        self.inner.nth_back(n)
+    }
+}
+
 impl<T> FusedIterator for IterRangeFromExclusiveToExclusive<T> where Range<T>: Iterator<Item = T> {}
 
 #[cfg(test)]
@@ -390,5 +405,25 @@ mod tests {
         let iter = range.into_iter();
 
         assert!(iter.is_sorted());
+    }
+
+    #[test]
+    fn iter_next_back() {
+        let range = RangeFromExclusiveToExclusive { start: 1, end: 4 };
+        let mut iter = range.into_iter();
+
+        assert_some_eq!(iter.next_back(), 3);
+        assert_some_eq!(iter.next_back(), 2);
+        assert_none!(iter.next_back());
+    }
+
+    #[test]
+    fn iter_nth_back() {
+        let range = RangeFromExclusiveToExclusive { start: 1, end: 250 };
+        let mut iter = range.into_iter();
+
+        assert_some_eq!(iter.nth_back(42), 207);
+        assert_some_eq!(iter.nth_back(100), 106);
+        assert_none!(iter.nth_back(104));
     }
 }
