@@ -11,5 +11,17 @@ keywords = ["range", "exclusive", "excluded", "bound", "rangebound"]
 categories = ["data-structures", "no-std"]
 exclude = [".github/*"]
 
+[package.metadata.docs.rs]
+# To build locally:
+# RUSTDOCFLAGS="--cfg doc_cfg" cargo +nightly doc --all-features --no-deps --open
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]
+
 [dev-dependencies]
 claims = "0.8.0"
+
+[features]
+alloc = []
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(doc_cfg)"]}

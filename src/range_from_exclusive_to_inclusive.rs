@@ -1,7 +1,9 @@
-use core::ops::{
+#[cfg(feature = "alloc")]
+use alloc::{string::String, vec::Vec};
+use core::{iter::FusedIterator, ops::{
     Bound::{self, Excluded, Included},
-    RangeBounds, RangeInclusive,
-};
+    Index, IndexMut, RangeBounds, RangeInclusive,
+}};
 
 /// A range bounded exclusively below and inclusively above.
 ///
@@ -19,12 +21,27 @@ use core::ops::{
 ///     end: 4,
 /// };
 /// ```
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct RangeFromExclusiveToInclusive<T> {
     /// The lower bound of the range (exclusive).
     pub start: T,
     /// The upper bound of the range (inclusive).
     pub end: T,
+}
+
+impl<T> RangeFromExclusiveToInclusive<T> {
+    /// Since implementations for many standard library traits for built-in range types rely on
+    /// nightly features, we implement those traits here by converting into standard library range
+    /// types. This allows these traits to be implemented without enabling nightly features.
+    fn into_range_inclusive(self) -> RangeInclusive<T>
+    where
+        RangeInclusive<T>: Iterator,
+    {
+        let mut range_inclusive = RangeInclusive::new(self.start, self.end);
+        // Advance by one so we don't include the first value.
+        range_inclusive.next();
+        range_inclusive
+    }
 }
 
 impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
@@ -49,6 +66,70 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     }
 }
 
+impl<T> Index<RangeFromExclusiveToInclusive<usize>> for [T] {
+    type Output = <[T] as Index<RangeInclusive<usize>>>::Output;
+
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
+        self.index(index.into_range_inclusive())
+    }
+}
+
+impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for [T] {
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
+        self.index_mut(index.into_range_inclusive())
+    }
+}
+
+#[cfg(feature = "alloc")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+impl<T> Index<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
+    type Output = <Vec<T> as Index<RangeInclusive<usize>>>::Output;
+
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
+        self.index(index.into_range_inclusive())
+    }
+}
+
+#[cfg(feature = "alloc")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
+        self.index_mut(index.into_range_inclusive())
+    }
+}
+
+impl Index<RangeFromExclusiveToInclusive<usize>> for str {
+    type Output = <str as Index<RangeInclusive<usize>>>::Output;
+
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
+        self.index(index.into_range_inclusive())
+    }
+}
+
+impl IndexMut<RangeFromExclusiveToInclusive<usize>> for str {
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
+        self.index_mut(index.into_range_inclusive())
+    }
+}
+
+#[cfg(feature = "alloc")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+impl Index<RangeFromExclusiveToInclusive<usize>> for String {
+    type Output = <String as Index<RangeInclusive<usize>>>::Output;
+
+    fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
+        self.index(index.into_range_inclusive())
+    }
+}
+
+#[cfg(feature = "alloc")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+impl IndexMut<RangeFromExclusiveToInclusive<usize>> for String {
+    fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
+        self.index_mut(index.into_range_inclusive())
+    }
+}
+
 impl<T> IntoIterator for RangeFromExclusiveToInclusive<T>
 where
     RangeInclusive<T>: Iterator<Item = T>,
@@ -57,11 +138,9 @@ where
     type Item = T;
 
     fn into_iter(self) -> Self::IntoIter {
-        let mut inner = RangeInclusive::new(self.start, self.end);
-        // Advance by one so we don't include the first value.
-        inner.next();
-
-        IterRangeFromExclusiveToInclusive { inner }
+        IterRangeFromExclusiveToInclusive {
+            inner: self.into_range_inclusive(),
+        }
     }
 }
 
@@ -128,6 +207,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::RangeFromExclusiveToInclusive;
+    #[cfg(feature = "alloc")]
+    use alloc::{borrow::ToOwned, vec};
     use claims::{assert_matches, assert_none, assert_some_eq};
     use core::ops::{
         Bound::{Excluded, Included},
@@ -148,6 +229,86 @@ mod tests {
 
         assert_matches!(RangeBounds::<usize>::start_bound(&range), Excluded(1));
         assert_matches!(RangeBounds::<usize>::end_bound(&range), Included(3));
+    }
+
+    #[test]
+    fn index_slice() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let slice = [0, 1, 2, 3];
+
+        assert_eq!(slice[range], [1, 2]);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[test]
+    fn index_vec() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let vec = vec![0, 1, 2, 3];
+
+        assert_eq!(vec[range], [1, 2]);
+    }
+
+    #[test]
+    fn index_str() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let str = "abcd";
+
+        assert_eq!(&str[range], "bc");
+    }
+
+    #[cfg(feature = "alloc")]
+    #[test]
+    fn index_string() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let string = "abcd".to_owned();
+
+        assert_eq!(&string[range], "bc");
+    }
+
+    #[test]
+    fn index_mut_slice() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let mut slice = [0, 1, 2, 3];
+
+        slice[range][0] = 4;
+        slice[range][1] = 5;
+
+        assert_eq!(slice, [0, 4, 5, 3]);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[test]
+    fn index_mut_vec() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let mut vec = vec![0, 1, 2, 3];
+
+        vec[range][0] = 4;
+        vec[range][1] = 5;
+
+        assert_eq!(vec, [0, 4, 5, 3]);
+    }
+
+    #[cfg(feature = "alloc")]
+    #[test]
+    fn index_mut_str() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let mut string = "abcd".to_owned();
+        let str: &mut str = string.as_mut_str();
+
+        str[range].make_ascii_uppercase();
+
+        assert_eq!(string, "aBCd");
+    }
+
+    #[cfg(feature = "alloc")]
+    #[test]
+    fn index_mut_string() {
+        let range = RangeFromExclusiveToInclusive { start: 0, end: 2 };
+        let mut string = "abcd".to_owned();
+
+        string[range].make_ascii_uppercase();
+
+        assert_eq!(string, "aBCd");
     }
 
     #[test]
