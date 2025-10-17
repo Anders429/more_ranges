@@ -36,6 +36,7 @@ impl<T> RangeFromExclusiveToInclusive<T> {
     /// Since implementations for many standard library traits for built-in range types rely on
     /// nightly features, we implement those traits here by converting into standard library range
     /// types. This allows these traits to be implemented without enabling nightly features.
+    #[inline]
     fn into_range_inclusive(self) -> RangeInclusive<T>
     where
         RangeInclusive<T>: Iterator,
@@ -52,6 +53,7 @@ impl<T> RangeBounds<T> for RangeFromExclusiveToInclusive<T> {
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
+
     #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Included(&self.end)
@@ -63,6 +65,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
+
     #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Included(self.end)
@@ -72,12 +75,14 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusiveToInclusive<&'a T> {
 impl<T> Index<RangeFromExclusiveToInclusive<usize>> for [T] {
     type Output = <[T] as Index<RangeInclusive<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
         self.index(index.into_range_inclusive())
     }
 }
 
 impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for [T] {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_inclusive())
     }
@@ -88,6 +93,7 @@ impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for [T] {
 impl<T> Index<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
     type Output = <Vec<T> as Index<RangeInclusive<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
         self.index(index.into_range_inclusive())
     }
@@ -96,6 +102,7 @@ impl<T> Index<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_inclusive())
     }
@@ -104,12 +111,14 @@ impl<T> IndexMut<RangeFromExclusiveToInclusive<usize>> for Vec<T> {
 impl Index<RangeFromExclusiveToInclusive<usize>> for str {
     type Output = <str as Index<RangeInclusive<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
         self.index(index.into_range_inclusive())
     }
 }
 
 impl IndexMut<RangeFromExclusiveToInclusive<usize>> for str {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_inclusive())
     }
@@ -120,6 +129,7 @@ impl IndexMut<RangeFromExclusiveToInclusive<usize>> for str {
 impl Index<RangeFromExclusiveToInclusive<usize>> for String {
     type Output = <String as Index<RangeInclusive<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusiveToInclusive<usize>) -> &Self::Output {
         self.index(index.into_range_inclusive())
     }
@@ -128,6 +138,7 @@ impl Index<RangeFromExclusiveToInclusive<usize>> for String {
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 impl IndexMut<RangeFromExclusiveToInclusive<usize>> for String {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusiveToInclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_inclusive())
     }

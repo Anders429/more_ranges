@@ -41,6 +41,7 @@ impl<T> RangeFromExclusive<T> {
     /// Since implementations for many standard library traits for built-in range types rely on
     /// nightly features, we implement those traits here by converting into standard library range
     /// types. This allows these traits to be implemented without enabling nightly features.
+    #[inline]
     fn into_range_from(self) -> RangeFrom<T>
     where
         RangeFrom<T>: Iterator,
@@ -57,6 +58,7 @@ impl<T> RangeBounds<T> for RangeFromExclusive<T> {
     fn start_bound(&self) -> Bound<&T> {
         Excluded(&self.start)
     }
+
     #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Unbounded
@@ -68,6 +70,7 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
     fn start_bound(&self) -> Bound<&T> {
         Excluded(self.start)
     }
+
     #[inline]
     fn end_bound(&self) -> Bound<&T> {
         Unbounded
@@ -77,12 +80,14 @@ impl<'a, T> RangeBounds<T> for RangeFromExclusive<&'a T> {
 impl<T> Index<RangeFromExclusive<usize>> for [T] {
     type Output = <[T] as Index<RangeFrom<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusive<usize>) -> &Self::Output {
         self.index(index.into_range_from())
     }
 }
 
 impl<T> IndexMut<RangeFromExclusive<usize>> for [T] {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_from())
     }
@@ -93,6 +98,7 @@ impl<T> IndexMut<RangeFromExclusive<usize>> for [T] {
 impl<T> Index<RangeFromExclusive<usize>> for Vec<T> {
     type Output = <Vec<T> as Index<RangeFrom<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusive<usize>) -> &Self::Output {
         self.index(index.into_range_from())
     }
@@ -101,6 +107,7 @@ impl<T> Index<RangeFromExclusive<usize>> for Vec<T> {
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 impl<T> IndexMut<RangeFromExclusive<usize>> for Vec<T> {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_from())
     }
@@ -109,12 +116,14 @@ impl<T> IndexMut<RangeFromExclusive<usize>> for Vec<T> {
 impl Index<RangeFromExclusive<usize>> for str {
     type Output = <str as Index<RangeFrom<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusive<usize>) -> &Self::Output {
         self.index(index.into_range_from())
     }
 }
 
 impl IndexMut<RangeFromExclusive<usize>> for str {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_from())
     }
@@ -125,6 +134,7 @@ impl IndexMut<RangeFromExclusive<usize>> for str {
 impl Index<RangeFromExclusive<usize>> for String {
     type Output = <String as Index<RangeFrom<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusive<usize>) -> &Self::Output {
         self.index(index.into_range_from())
     }
@@ -133,6 +143,7 @@ impl Index<RangeFromExclusive<usize>> for String {
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 impl IndexMut<RangeFromExclusive<usize>> for String {
+    #[inline]
     fn index_mut(&mut self, index: RangeFromExclusive<usize>) -> &mut Self::Output {
         self.index_mut(index.into_range_from())
     }
@@ -141,6 +152,7 @@ impl IndexMut<RangeFromExclusive<usize>> for String {
 impl Index<RangeFromExclusive<usize>> for CStr {
     type Output = <CStr as Index<RangeFrom<usize>>>::Output;
 
+    #[inline]
     fn index(&self, index: RangeFromExclusive<usize>) -> &Self::Output {
         self.index(index.into_range_from())
     }
