@@ -1,10 +1,12 @@
 #[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
 use core::{
-    ffi::CStr, iter::FusedIterator, ops::{
+    ffi::CStr,
+    iter::FusedIterator,
+    ops::{
         Bound::{self, Excluded, Unbounded},
         Index, IndexMut, RangeBounds, RangeFrom,
-    }
+    },
 };
 
 /// A range only bounded exclusively below.
@@ -183,6 +185,8 @@ where
         self.inner.nth(n)
     }
 }
+
+impl<T> FusedIterator for IterRangeFromExclusive<T> where RangeFrom<T>: Iterator<Item = T> {}
 
 #[cfg(test)]
 mod tests {

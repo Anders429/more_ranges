@@ -1,9 +1,12 @@
 #[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
-use core::{iter::FusedIterator, ops::{
-    Bound::{self, Excluded, Included},
-    Index, IndexMut, RangeBounds, RangeInclusive,
-}};
+use core::{
+    iter::FusedIterator,
+    ops::{
+        Bound::{self, Excluded, Included},
+        Index, IndexMut, RangeBounds, RangeInclusive,
+    },
+};
 
 /// A range bounded exclusively below and inclusively above.
 ///
@@ -202,6 +205,11 @@ where
     {
         self.inner.is_sorted()
     }
+}
+
+impl<T> FusedIterator for IterRangeFromExclusiveToInclusive<T> where
+    RangeInclusive<T>: Iterator<Item = T>
+{
 }
 
 #[cfg(test)]
