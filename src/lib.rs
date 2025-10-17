@@ -31,6 +31,10 @@
 //! [`RangeFrom`]: core::ops::RangeFrom
 
 #![no_std]
+#![cfg_attr(doc_cfg, feature(doc_cfg))]
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
 
 mod range_from_exclusive;
 mod range_from_exclusive_to_exclusive;

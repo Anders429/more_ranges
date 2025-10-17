@@ -27,6 +27,22 @@ jobs:
         toolchain: ${{ matrix.rust }}
     - run: cargo test --verbose
 
+  test_alloc:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+          - 1.38.0
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: ${{ matrix.rust }}
+    - run: cargo test --features alloc --verbose
+
   no_std:
     runs-on: ubuntu-latest
     strategy:
@@ -42,3 +58,19 @@ jobs:
         toolchain: ${{ matrix.rust }}
         targets: thumbv6m-none-eabi
     - run: cargo build --target thumbv6m-none-eabi --verbose
+
+  no_std_alloc:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+          - nightly
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: ${{ matrix.rust }}
+        targets: thumbv6m-none-eabi
+    - run: cargo build --features alloc --target thumbv6m-none-eabi --verbose
