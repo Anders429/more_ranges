@@ -2,8 +2,6 @@
 //!
 //! Specifically, these are ranges which are bounded exclusively below.
 //!
-//! These ranges currently do not function as [`Iterator`]s and cannot be used in indexing.
-//!
 //! # Example
 //! While each range type in the standard library is either bounded inclusively below or unbounded
 //! below, each range type provided in this crate is bounded exclusively below. Compare, for

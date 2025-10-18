@@ -311,6 +311,7 @@ where
     }
 }
 
+/// Iterator for [`RangeFromExclusiveToInclusive`].
 pub struct IterRangeFromExclusiveToInclusive<T> {
     inner: RangeInclusive<T>,
 }
