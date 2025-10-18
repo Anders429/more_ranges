@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2025-10-18
 ### Added
 - Implemented `Iterator` for `RangeFromExclusive`.
 - Implemented `Iterator` for `RangeFromExclusiveToExclusive`.
