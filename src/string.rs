@@ -1,3 +1,5 @@
+use core::str;
+
 const INVALID: &str = "\u{fffd}\u{fffd}\u{fffd}";
 
 /// Converts from UTF-8 bytes to `&str`. If the bytes are not valid, instead returns a sequence of
