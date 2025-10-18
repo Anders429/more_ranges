@@ -10,6 +10,8 @@
 - Implemented `FusedIterator` for `RangeFromExclusiveToInclusive`.
 - Implemented `DoubleEndedIterator` for `RangeFromExclusiveToExclusive`.
 - Implemented `DoubleEndedIterator` for `RangeFromExclusiveToInclusive`.
+- Implemented `ExactSizeIterator` for `RangeFromExclusiveToExclusive` for all integers within the pointer size, as well as `char`s.
+- Implemented `ExactSizeIterator` for `RangeFromExclusiveToInclusive` for all integers within the pointer size, as well as `char`s.
 - Implemented `Index` and `IndexMut` for `[T]`, `Vec<T>`, `str`, and `String` using `RangeFromExclusive<usize>`.
 - Implemented `Index` and `IndexMut` for `[T]`, `Vec<T>`, `str`, and `String` using `RangeFromExclusiveToExclusive<usize>`.
 - Implemented `Index` and `IndexMut` for `[T]`, `Vec<T>`, `str`, and `String` using `RangeFromExclusiveToInclusive<usize>`.
