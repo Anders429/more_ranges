@@ -17,10 +17,10 @@
 - Implemented `Index` and `IndexMut` for `[T]`, `Vec<T>`, `str`, and `String` using `RangeFromExclusiveToInclusive<usize>`.
 - Implemented `Index` for `CStr` using `RangeFromExclusive<usize>`.
 - Optional `alloc` feature to enable interoperation with types from the `alloc` crate.
+- Optional `serde` feature to implement `Serialize` and `Deserialize` traits for `RangeFromExclusive`, `RangeFromExclusiveToExclusive`, and `RangeFromExclusiveToInclusive`.
 ### Changed
 - Increased MSRV to `1.83.0`.
 - Increased edition to `2021`.
-- Updated dev dependency on `claim` to instead depend on `claims`.
 
 ## 0.1.0 - 2021-02-07
 ### Added

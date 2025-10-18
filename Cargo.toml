@@ -18,11 +18,16 @@ exclude = [".github/*"]
 all-features = true
 rustdoc-args = ["--cfg", "doc_cfg"]
 
+[dependencies]
+serde_core = {version = "1.0.228", default-features = false, optional = true}
+
 [dev-dependencies]
 claims = "0.8.0"
+serde_assert = "0.8.0"
 
 [features]
 alloc = []
+serde = ["serde_core"]
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(doc_cfg)"]}
