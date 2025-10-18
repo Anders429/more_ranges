@@ -1,6 +1,6 @@
 # more_ranges
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Anders429/more_ranges/Tests)](https://github.com/Anders429/more_ranges/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Anders429/more_ranges/tests.yaml?branch=master)](https://github.com/Anders429/more_ranges/actions)
 [![crates.io](https://img.shields.io/crates/v/more_ranges)](https://crates.io/crates/more_ranges)
 [![docs.rs](https://docs.rs/more_ranges/badge.svg)](https://docs.rs/more_ranges)
 [![MSRV](https://img.shields.io/badge/rustc-1.83.0+-yellow.svg)](#minimum-supported-rust-version)
