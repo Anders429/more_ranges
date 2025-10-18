@@ -3,7 +3,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Anders429/more_ranges/Tests)](https://github.com/Anders429/more_ranges/actions)
 [![crates.io](https://img.shields.io/crates/v/more_ranges)](https://crates.io/crates/more_ranges)
 [![docs.rs](https://docs.rs/more_ranges/badge.svg)](https://docs.rs/more_ranges)
-[![MSRV](https://img.shields.io/badge/rustc-1.38.0+-yellow.svg)](#minimum-supported-rust-version)
+[![MSRV](https://img.shields.io/badge/rustc-1.83.0+-yellow.svg)](#minimum-supported-rust-version)
 [![License](https://img.shields.io/crates/l/more_ranges)](#license)
 
 Range types not provided in the standard library.
@@ -32,7 +32,7 @@ let range_from_exclusive_to_inclusive = RangeFromExclusiveToInclusive { start: 1
 ```
 
 ## Minimum Supported Rust Version
-This crate is tested against stable `rustc 1.38.0` and up.
+This crate is tested against stable `rustc 1.83.0` and up.
 
 ## License
 This project is licensed under either of

@@ -18,7 +18,8 @@
 - Implemented `Index` for `CStr` using `RangeFromExclusive<usize>`.
 - Optional `alloc` feature to enable interoperation with types from the `alloc` crate.
 ### Changed
-- Increased MSRV to `1.38.0`.
+- Increased MSRV to `1.83.0`.
+- Increased edition to `2021`.
 - Updated dev dependency on `claim` to instead depend on `claims`.
 
 ## 0.1.0 - 2021-02-07
