@@ -233,6 +233,100 @@ where
     }
 }
 
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<usize> {
+    #[inline]
+    fn len(&self) -> usize {
+        // While `RangeInclusive` does not implement this trait for `usize`, this type can, since
+        // it is one element smaller and will therefore always fit within the pointer size.
+        self.inner.size_hint().0
+    }
+}
+
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<u8> {
+    #[inline]
+    fn len(&self) -> usize {
+        self.inner.len()
+    }
+}
+
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<u16> {
+    #[inline]
+    fn len(&self) -> usize {
+        self.inner.len()
+    }
+}
+
+#[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<u32> {
+    #[inline]
+    fn len(&self) -> usize {
+        // While `RangeInclusive` does not implement this trait for `u32`, this type can, since it
+        // is one element smaller and will therefore always fit within the pointer size.
+        self.inner.size_hint().0
+    }
+}
+
+#[cfg(target_pointer_width = "64")]
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<u64> {
+    #[inline]
+    fn len(&self) -> usize {
+        // While `RangeInclusive` does not implement this trait for `u64`, this type can, since it
+        // is one element smaller and will therefore always fit within the pointer size.
+        self.inner.size_hint().0
+    }
+}
+
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<isize> {
+    #[inline]
+    fn len(&self) -> usize {
+        // While `RangeInclusive` does not implement this trait for `isize`, this type can, since
+        // it is one element smaller and will therefore always fit within the pointer size.
+        self.inner.size_hint().0
+    }
+}
+
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<i8> {
+    #[inline]
+    fn len(&self) -> usize {
+        self.inner.len()
+    }
+}
+
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<i16> {
+    #[inline]
+    fn len(&self) -> usize {
+        self.inner.len()
+    }
+}
+
+#[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<i32> {
+    #[inline]
+    fn len(&self) -> usize {
+        // While `RangeInclusive` does not implement this trait for `i32`, this type can, since it
+        // is one element smaller and will therefore always fit within the pointer size.
+        self.inner.size_hint().0
+    }
+}
+
+#[cfg(target_pointer_width = "64")]
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<i64> {
+    #[inline]
+    fn len(&self) -> usize {
+        // While `RangeInclusive` does not implement this trait for `i64`, this type can, since it
+        // is one element smaller and will therefore always fit within the pointer size.
+        self.inner.size_hint().0
+    }
+}
+
+#[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+impl ExactSizeIterator for IterRangeFromExclusiveToInclusive<char> {
+    #[inline]
+    fn len(&self) -> usize {
+        self.inner.size_hint().0
+    }
+}
+
 impl<T> FusedIterator for IterRangeFromExclusiveToInclusive<T> where
     RangeInclusive<T>: Iterator<Item = T>
 {
@@ -441,5 +535,384 @@ mod tests {
         assert_some_eq!(iter.nth_back(100), 107);
         assert_some_eq!(iter.nth_back(104), 2);
         assert_none!(iter.nth_back(0));
+    }
+
+    #[test]
+    fn iter_usize_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1usize,
+            end: 4usize,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 3);
+    }
+
+    #[test]
+    fn iter_usize_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1usize,
+            end: 1usize,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[test]
+    fn iter_usize_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: usize::MIN,
+            end: usize::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), usize::MAX);
+    }
+
+    #[test]
+    fn iter_u8_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u8,
+            end: 4u8,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 3);
+    }
+
+    #[test]
+    fn iter_u8_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u8,
+            end: 1u8,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[test]
+    fn iter_u8_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: u8::MIN,
+            end: u8::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u8::MAX as usize);
+    }
+
+    #[test]
+    fn iter_u16_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u16,
+            end: 4u16,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 3);
+    }
+
+    #[test]
+    fn iter_u16_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u16,
+            end: 1u16,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[test]
+    fn iter_u16_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: u16::MIN,
+            end: u16::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u16::MAX as usize);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_u32_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u32,
+            end: 4u32,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 3);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_u32_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u32,
+            end: 1u32,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_u32_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: u32::MIN,
+            end: u32::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u32::MAX as usize);
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    #[test]
+    fn iter_u64_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u64,
+            end: 4u64,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 3);
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    #[test]
+    fn iter_u64_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1u64,
+            end: 1u64,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    #[test]
+    fn iter_u64_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: u64::MIN,
+            end: u64::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u64::MAX as usize);
+    }
+
+    #[test]
+    fn iter_isize_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: -1isize,
+            end: 4isize,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 5);
+    }
+
+    #[test]
+    fn iter_isize_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1isize,
+            end: 1isize,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[test]
+    fn iter_isize_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: isize::MIN,
+            end: isize::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), usize::MAX);
+    }
+
+    #[test]
+    fn iter_i8_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: -1i8,
+            end: 4i8,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 5);
+    }
+
+    #[test]
+    fn iter_i8_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1i8,
+            end: 1i8,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[test]
+    fn iter_i8_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: i8::MIN,
+            end: i8::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u8::MAX as usize);
+    }
+
+    #[test]
+    fn iter_i16_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: -1i16,
+            end: 4i16,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 5);
+    }
+
+    #[test]
+    fn iter_i16_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1i16,
+            end: 1i16,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[test]
+    fn iter_i16_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: i16::MIN,
+            end: i16::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u16::MAX as usize);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_i32_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: -1i32,
+            end: 4i32,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 5);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_i32_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1i32,
+            end: 1i32,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_i32_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: i32::MIN,
+            end: i32::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u32::MAX as usize);
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    #[test]
+    fn iter_i64_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: -1i64,
+            end: 4i64,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 5);
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    #[test]
+    fn iter_i64_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 1i64,
+            end: 1i64,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[cfg(target_pointer_width = "64")]
+    #[test]
+    fn iter_i64_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: i64::MIN,
+            end: i64::MAX,
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), u64::MAX as usize);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_char_len() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 'a',
+            end: 'd',
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 3);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_char_len_empty() {
+        let range = RangeFromExclusiveToInclusive {
+            start: 'a',
+            end: 'a',
+        };
+        let iter = range.into_iter();
+
+        assert_eq!(iter.len(), 0);
+    }
+
+    #[cfg(any(target_pointer_width = "32", target_pointer_width = "64"))]
+    #[test]
+    fn iter_char_len_max() {
+        let range = RangeFromExclusiveToInclusive {
+            start: char::MIN,
+            end: char::MAX,
+        };
+        let iter = range.into_iter();
+
+        // This is guaranteed to never change. Unicode has a fixed number of code points.
+        assert_eq!(iter.len(), 1_112_063);
     }
 }
