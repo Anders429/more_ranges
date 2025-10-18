@@ -310,6 +310,7 @@ where
     }
 }
 
+/// Iterator for [`RangeFromExclusive`].
 pub struct IterRangeFromExclusive<T> {
     inner: RangeFrom<T>,
 }
