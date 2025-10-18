@@ -1,3 +1,5 @@
+#[cfg(feature = "serde")]
+use crate::string;
 #[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
 use core::{
@@ -7,6 +9,14 @@ use core::{
         Bound::{self, Excluded, Unbounded},
         Index, IndexMut, RangeBounds, RangeFrom,
     },
+};
+#[cfg(feature = "serde")]
+use core::{fmt, fmt::Formatter, marker::PhantomData};
+#[cfg(feature = "serde")]
+use serde_core::{
+    de,
+    de::{Deserialize, Deserializer, Error as _, MapAccess, SeqAccess, Visitor},
+    ser::{Serialize, SerializeStruct, Serializer},
 };
 
 /// A range only bounded exclusively below.
@@ -158,6 +168,134 @@ impl Index<RangeFromExclusive<usize>> for CStr {
     }
 }
 
+#[cfg(feature = "serde")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
+impl<T> Serialize for RangeFromExclusive<T>
+where
+    T: Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("RangeFromExclusive", 1)?;
+        state.serialize_field("start", &self.start)?;
+        state.end()
+    }
+}
+
+#[cfg(feature = "serde")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "serde")))]
+impl<'de, T> Deserialize<'de> for RangeFromExclusive<T>
+where
+    T: Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        const FIELDS: &[&str] = &["start"];
+
+        enum Field {
+            Start,
+        }
+
+        impl<'de> Deserialize<'de> for Field {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: Deserializer<'de>,
+            {
+                struct FieldVisitor;
+
+                impl<'de> Visitor<'de> for FieldVisitor {
+                    type Value = Field;
+
+                    fn expecting(&self, formatter: &mut Formatter) -> fmt::Result {
+                        formatter.write_str("`start`")
+                    }
+
+                    fn visit_str<E>(self, value: &str) -> Result<Self::Value, E>
+                    where
+                        E: de::Error,
+                    {
+                        match value {
+                            "start" => Ok(Field::Start),
+                            _ => Err(E::unknown_field(value, FIELDS)),
+                        }
+                    }
+
+                    fn visit_bytes<E>(self, value: &[u8]) -> Result<Self::Value, E>
+                    where
+                        E: de::Error,
+                    {
+                        match value {
+                            b"start" => Ok(Field::Start),
+                            _ => Err(E::unknown_field(string::from_utf8_lossy(value), FIELDS)),
+                        }
+                    }
+                }
+
+                deserializer.deserialize_identifier(FieldVisitor)
+            }
+        }
+
+        struct RangeFromExclusiveVisitor<T> {
+            marker: PhantomData<T>,
+        }
+
+        impl<'de, T> Visitor<'de> for RangeFromExclusiveVisitor<T>
+        where
+            T: Deserialize<'de>,
+        {
+            type Value = RangeFromExclusive<T>;
+
+            fn expecting(&self, formatter: &mut Formatter) -> fmt::Result {
+                formatter.write_str("struct RangeFromExclusive")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: SeqAccess<'de>,
+            {
+                let start = seq
+                    .next_element()?
+                    .ok_or_else(|| A::Error::invalid_length(0, &self))?;
+                Ok(RangeFromExclusive { start })
+            }
+
+            fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+            where
+                A: MapAccess<'de>,
+            {
+                let mut start = None;
+
+                while let Some(field) = map.next_key()? {
+                    match field {
+                        Field::Start => {
+                            if start.is_some() {
+                                return Err(A::Error::duplicate_field("start"));
+                            }
+                            start = Some(map.next_value()?);
+                        }
+                    }
+                }
+
+                Ok(RangeFromExclusive {
+                    start: start.ok_or_else(|| A::Error::missing_field("start"))?,
+                })
+            }
+        }
+
+        deserializer.deserialize_struct(
+            "RangeFromExclusive",
+            FIELDS,
+            RangeFromExclusiveVisitor {
+                marker: PhantomData,
+            },
+        )
+    }
+}
+
 impl<T> IntoIterator for RangeFromExclusive<T>
 where
     RangeFrom<T>: Iterator<Item = T>,
@@ -205,6 +343,8 @@ mod tests {
     use super::RangeFromExclusive;
     #[cfg(feature = "alloc")]
     use alloc::{borrow::ToOwned, vec};
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    use claims::{assert_err_eq, assert_ok_eq};
     use claims::{assert_matches, assert_ok, assert_some_eq};
     use core::{
         ffi::CStr,
@@ -213,6 +353,10 @@ mod tests {
             RangeBounds,
         },
     };
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    use serde_assert::{de, Deserializer, Serializer, Token};
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    use serde_core::{Deserialize, Serialize};
 
     #[test]
     fn range_bounds() {
@@ -342,5 +486,116 @@ mod tests {
 
         assert_some_eq!(iter.nth(42), 44);
         assert_some_eq!(iter.nth(100), 145);
+    }
+
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    #[test]
+    fn serialize() {
+        let range = RangeFromExclusive { start: 1u32 };
+
+        let serializer = Serializer::builder().build();
+        assert_ok_eq!(
+            range.serialize(&serializer),
+            [
+                Token::Struct {
+                    name: "RangeFromExclusive",
+                    len: 1
+                },
+                Token::Field("start"),
+                Token::U32(1),
+                Token::StructEnd,
+            ]
+        );
+    }
+
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    #[test]
+    fn deserialize() {
+        let mut deserializer = Deserializer::builder([
+            Token::Struct {
+                name: "RangeFromExclusive",
+                len: 1,
+            },
+            Token::Field("start"),
+            Token::I8(-5),
+            Token::StructEnd,
+        ])
+        .build();
+
+        assert_ok_eq!(
+            RangeFromExclusive::deserialize(&mut deserializer),
+            RangeFromExclusive { start: -5i8 }
+        );
+    }
+
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    #[test]
+    fn deserialize_unknown_field() {
+        let mut deserializer = Deserializer::builder([
+            Token::Struct {
+                name: "RangeFromExclusive",
+                len: 1,
+            },
+            Token::Field("invalid"),
+            Token::I8(-5),
+            Token::StructEnd,
+        ])
+        .build();
+
+        assert_err_eq!(
+            RangeFromExclusive::<i8>::deserialize(&mut deserializer),
+            de::Error::UnknownField("invalid".to_owned(), &["start"])
+        );
+    }
+
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    #[test]
+    fn deserialize_duplicate_field() {
+        let mut deserializer = Deserializer::builder([
+            Token::Struct {
+                name: "RangeFromExclusive",
+                len: 2,
+            },
+            Token::Field("start"),
+            Token::I8(-5),
+            Token::Field("start"),
+            Token::I8(42),
+            Token::StructEnd,
+        ])
+        .build();
+
+        assert_err_eq!(
+            RangeFromExclusive::<i8>::deserialize(&mut deserializer),
+            de::Error::DuplicateField("start")
+        );
+    }
+
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    #[test]
+    fn deserialize_missing_field() {
+        let mut deserializer = Deserializer::builder([
+            Token::Struct {
+                name: "RangeFromExclusive",
+                len: 0,
+            },
+            Token::StructEnd,
+        ])
+        .build();
+
+        assert_err_eq!(
+            RangeFromExclusive::<i8>::deserialize(&mut deserializer),
+            de::Error::MissingField("start")
+        );
+    }
+
+    #[cfg(all(feature = "alloc", feature = "serde"))]
+    #[test]
+    fn serde_roundtrip() {
+        let range = RangeFromExclusive { start: 1u32 };
+
+        let serializer = Serializer::builder().build();
+        let mut deserializer =
+            Deserializer::builder(assert_ok!(range.serialize(&serializer))).build();
+        assert_ok_eq!(RangeFromExclusive::deserialize(&mut deserializer), range);
     }
 }

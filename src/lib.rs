@@ -39,6 +39,8 @@ extern crate alloc;
 mod range_from_exclusive;
 mod range_from_exclusive_to_exclusive;
 mod range_from_exclusive_to_inclusive;
+#[cfg(feature = "serde")]
+mod string;
 
 pub use range_from_exclusive::{IterRangeFromExclusive, RangeFromExclusive};
 pub use range_from_exclusive_to_exclusive::{
